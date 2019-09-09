@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.lf.CarTypeDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="imageUrl" jdbcType="VARCHAR" property="imageUrl" />
+        <result column="status" jdbcType="SMALLINT" property="status" />
+        <result column="typeId" jdbcType="SMALLINT" property="typeId" />
+        <result column="orderId" jdbcType="INTEGER" property="orderId" />
+        <result column="proposedPrice" jdbcType="DECIMAL" property="proposedPrice" />
+        <result column="parentAcid" jdbcType="INTEGER" property="parentAcid" />
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="createUser" jdbcType="INTEGER" property="createUser" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lf_4s_car_type
+    where acid = #{acid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+    insert into lf_4s_car_type (acid, uniacid, `name`,
+      imageUrl, `status`, typeId,
+      orderId, proposedPrice, parentAcid,
+      updateTime, `createUser`, createTime
+      )
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+      #{imageUrl,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{typeId,jdbcType=SMALLINT},
+      #{orderId,jdbcType=INTEGER}, #{proposedPrice,jdbcType=DECIMAL}, #{parentAcid,jdbcType=INTEGER},
+      #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+    update lf_4s_car_type
+    set uniacid = #{uniacid,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      imageUrl = #{imageUrl,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=SMALLINT},
+      typeId = #{typeId,jdbcType=SMALLINT},
+      orderId = #{orderId,jdbcType=INTEGER},
+      proposedPrice = #{proposedPrice,jdbcType=DECIMAL},
+      parentAcid = #{parentAcid,jdbcType=INTEGER},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      `createUser` = #{createUser,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP}
+    where acid = #{acid,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select acid, uniacid, `name`, imageUrl, `status`, typeId, orderId, proposedPrice,
+    parentAcid, updateTime, `createUser`, createTime
+    from lf_4s_car_type
+    where acid = #{acid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select acid, uniacid, `name`, imageUrl, `status`, typeId, orderId, proposedPrice,
+    parentAcid, updateTime, `createUser`, createTime
+    from lf_4s_car_type
+  </select>
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="imageUrl" jdbcType="VARCHAR" property="imageurl" />
+        <result column="status" jdbcType="SMALLINT" property="status" />
+        <result column="typeId" jdbcType="SMALLINT" property="typeid" />
+        <result column="orderId" jdbcType="INTEGER" property="orderid" />
+        <result column="proposedPrice" jdbcType="DECIMAL" property="proposedprice" />
+        <result column="parentAcid" jdbcType="INTEGER" property="parentacid" />
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+        <result column="createUser" jdbcType="INTEGER" property="createuser" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lf_4s_car_type
+    where acid = #{acid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+    insert into lf_4s_car_type (acid, uniacid, `name`,
+      imageUrl, `status`, typeId,
+      orderId, proposedPrice, parentAcid,
+      updateTime, `createUser`, createTime
+      )
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+      #{imageurl,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{typeid,jdbcType=SMALLINT},
+      #{orderid,jdbcType=INTEGER}, #{proposedprice,jdbcType=DECIMAL}, #{parentacid,jdbcType=INTEGER},
+      #{updatetime,jdbcType=TIMESTAMP}, #{createuser,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
+    update lf_4s_car_type
+    set uniacid = #{uniacid,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      imageUrl = #{imageurl,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=SMALLINT},
+      typeId = #{typeid,jdbcType=SMALLINT},
+      orderId = #{orderid,jdbcType=INTEGER},
+      proposedPrice = #{proposedprice,jdbcType=DECIMAL},
+      parentAcid = #{parentacid,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      `createUser` = #{createuser,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where acid = #{acid,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select acid, uniacid, `name`, imageUrl, `status`, typeId, orderId, proposedPrice,
+    parentAcid, updateTime, `createUser`, createTime
+    from lf_4s_car_type
+    where acid = #{acid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select acid, uniacid, `name`, imageUrl, `status`, typeId, orderId, proposedPrice,
+    parentAcid, updateTime, `createUser`, createTime
+    from lf_4s_car_type
+  </select>
+</mapper>

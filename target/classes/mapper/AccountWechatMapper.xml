@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.loftown.wechat.app.code.dao.AccountWechatDao">
+
+    <sql id="BASE_TABLE">
+        ims_account_wechats
+    </sql>
+
+    <sql id="BASE_COLUMN">
+        acid, uniacid, token, encodingaeskey, `level`, `name`, account, original,
+    signature, country, province, city, username, `password`, lastupdate, `key`, secret,
+    styleid, subscribeurl, auth_refresh_token, head_img, service_type_info, verify_type_info,
+    `alias`, qrcode_url, principal_name
+    </sql>
+
+    <select id="getModelByPage" parameterType="java.lang.Integer" resultType="AccountWechatDTO">
+      select
+        <include refid="BASE_COLUMN"/>
+      from
+        <include refid="BASE_TABLE"/>
+        limit #{pageStart},20
+    </select>
+
+</mapper>

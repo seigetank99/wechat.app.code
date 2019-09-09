@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.AccountDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.AccountDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid"/>
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid"/>
+        <result column="hash" jdbcType="VARCHAR" property="hash"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="isconnect" jdbcType="TINYINT" property="isconnect"/>
+        <result column="isdeleted" jdbcType="TINYINT" property="isdeleted"/>
+        <result column="endtime" jdbcType="INTEGER" property="endtime"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from ims_account
+        where acid = #{acid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.AccountDTO">
+        insert into ims_account (acid, uniacid, hash,
+        `type`, isconnect, isdeleted,
+        endtime)
+        values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{hash,jdbcType=VARCHAR},
+        #{type,jdbcType=TINYINT}, #{isconnect,jdbcType=TINYINT}, #{isdeleted,jdbcType=TINYINT},
+        #{endtime,jdbcType=INTEGER})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.AccountDTO">
+        update ims_account
+        set uniacid = #{uniacid,jdbcType=INTEGER},
+        hash = #{hash,jdbcType=VARCHAR},
+        `type` = #{type,jdbcType=TINYINT},
+        isconnect = #{isconnect,jdbcType=TINYINT},
+        isdeleted = #{isdeleted,jdbcType=TINYINT},
+        endtime = #{endtime,jdbcType=INTEGER}
+        where acid = #{acid,jdbcType=INTEGER}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select acid, uniacid, hash, `type`, isconnect, isdeleted, endtime
+        from ims_account
+        where acid = #{acid,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select acid, uniacid, hash, `type`, isconnect, isdeleted, endtime
+        from ims_account
+    </select>
+</mapper>

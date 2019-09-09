@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>体验者列表</title>
+    <link rel="stylesheet" href="/css/auditList.css"
+          type="text/css" />
+    <script type="text/javascript"
+            src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body>
+<div id="big_box">
+    <table cellspacing="0" cellpadding="0" border="1px" bordercolor="#ddd">
+        <tr>
+            <th><a>模版编号</a></th>
+            <th><a>版本号</a></th>
+            <th><a>版本说明</a></th>
+            <th><a>创建来源小程序名称</a></th>
+            <th><a>创建人微信昵称</a></th>
+            <th><a>创建时间</a></th>
+        </tr>
+        <tr th:each="itme:${draftsModels}">
+            <td th:text="${itme.draftId}"></td>
+            <td th:text="${itme.userVersion}"></td>
+            <td th:text="${itme.userDesc}"></td>
+            <td th:text="${itme.sourceMiniprogram}"></td>
+            <td th:text="${itme.developer}"></td>
+            <td th:text="${itme.createTimeFormat}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script type="text/javascript">
+    function auditButton(auditid) {
+        window.location.href = "/audit/failure/" + auditid;
+    }
+</script>
+</html>

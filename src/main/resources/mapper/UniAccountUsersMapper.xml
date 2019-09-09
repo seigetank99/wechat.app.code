@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.UniAccountUserDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.UniAccountUserDTO">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
+        <result column="uid" jdbcType="INTEGER" property="uid" />
+        <result column="role" jdbcType="VARCHAR" property="role" />
+        <result column="rank" jdbcType="TINYINT" property="rank" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ims_uni_account_users
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.UniAccountUserDTO">
+    insert into ims_uni_account_users (id, uniacid, `uid`,
+      `role`, `rank`)
+    values (#{id,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER},
+      #{role,jdbcType=VARCHAR}, #{rank,jdbcType=TINYINT})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.UniAccountUserDTO">
+    update ims_uni_account_users
+    set uniacid = #{uniacid,jdbcType=INTEGER},
+      `uid` = #{uid,jdbcType=INTEGER},
+      `role` = #{role,jdbcType=VARCHAR},
+      `rank` = #{rank,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, uniacid, `uid`, `role`, `rank`
+    from ims_uni_account_users
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, uniacid, `uid`, `role`, `rank`
+    from ims_uni_account_users
+  </select>
+</mapper>

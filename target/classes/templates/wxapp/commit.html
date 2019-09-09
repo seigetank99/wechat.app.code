@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
+<head>
+    <meta charset="UTF-8">
+    <title>提交小程序代码</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+<div class="layui-tab-content">
+    <form class="layui-form layui-form-pane" lay-filter="commitCode" id="formCommit">
+        <div class="layui-form-item">
+            <label class="layui-form-label">小程序名称</label>
+            <div class="layui-input-inline">
+                <input type="text" readonly="readonly" name="txtWxAppName" id="txtWxAppName" autocomplete="off"
+                       class="layui-input">
+                <input type="hidden" name="acid" id="acid">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选中代码库</label>
+            <div class="layui-input-inline">
+                <select name="templateId" id="templateId" lay-verify="required"  lay-filter="selectTemplateId">
+                </select>
+                <input type="hidden" name="templateVersion" id="templateVersion">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发布版本号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="userVersion" id="userVersion" lay-verify="version" placeholder="请输入版本号"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发布描述</label>
+            <div class="layui-input-inline">
+                <input type="text" name="userDesc" id="userDesc" lay-verify="required" placeholder="请输入描述"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <button id="addDepartment" class="layui-btn" lay-filter="formVerify" lay-submit="" style="display: none">添加
+        </button>
+    </form>
+</div>
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script th:inline="javascript">
+    layui.use(['form'], function () {
+        $.ajax({
+            url: '/getSelectValue',
+            dataType: 'json',
+            type: 'post',
+            data: {type: 1,acid:0},
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#templateId').append(new Option(item.value, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+
+        //自定义验证规则
+        layui.form.verify({
+            version: [
+                /[0-9\.]+/
+                , '版本号只能包含数字和.'
+            ]
+        });
+        layui.form.on('select(selectTemplateId)', function(data){
+            $("#templateVersion").val(this.innerText);
+        });
+        //监听提交
+        layui.form.on('submit(formVerify)', function (data) {
+            $.ajax({
+                url: '/wxapp/commitCode',
+                dataType: 'json',
+                type: 'post',
+                data: data.field,
+                success: function (resultData) {
+                    //var jsonData = JSON.parse(data);
+                    if (resultData.code == 0) {
+                        layer.msg('操作成功', {
+                            icon: 1,
+                            time: 2000
+                        });
+                        var index = layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        layer.close(index);
+                    } else {
+                        layer.alert(resultData.message, {
+                            title: '提示'
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+        layui.form.val('commitCode', {
+            "txtWxAppName": [[${wxApp.name}]] // "name": "value"
+            , "acid": [[${wxApp.acid}]]
+        })
+    });
+</script>
+</body>
+</html>

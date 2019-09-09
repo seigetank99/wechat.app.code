@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
+<head>
+    <meta charset="UTF-8">
+    <title>提交小程序代码</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+<div class="layui-tab-content">
+    小程序名称：<label id="wxAppName"></label>
+    <input type="hidden" name="wxAppAcid" id="wxAppAcid">
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">功能页面1</div>
+    <div class="layui-card-body">
+        <form class="layui-form layui-form-pane" lay-filter="commitCode" id="formCommit">
+            <div class="layui-form-item">
+                <label class="layui-form-label">功能页面</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form" lay-filter="page">
+                        <select name="page" id="page" lay-verify="required" lay-filter="selectPage">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="title" id="title" placeholder="请输入标题" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">服务类目</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form" lay-filter="firstCategory">
+                        <select name="firstCategory" id="firstCategory" lay-verify="required"
+                                lay-filter="selectFirstCategory">
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="firstCategoryName" id="firstCategoryName">
+            </div>
+            <div class="layui-form-item" style="display: none" id="divSecondCategory">
+                <label class="layui-form-label">二级类目</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form" lay-filter="secondCategory">
+                        <select name="secondCategory" id="secondCategory" lay-filter="selectSecondCategory">
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="secondCategoryName" id="secondCategoryName">
+            </div>
+            <div class="layui-form-item" style="display: none" id="divThirdCategory">
+                <label class="layui-form-label">三级类目</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form" lay-filter="thirdCategory">
+                        <select name="thirdCategory" id="thirdCategory" lay-filter="selectThirdCategory">
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="thirdCategoryName" id="thirdCategoryName">
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="tag" id="tag" placeholder="标签用空格分开" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <button lay-filter="formVerify" lay-submit="" style="display: none">添加</button>
+        </form>
+    </div>
+</div>
+</div>
+<div class="layui-tab-content" id="addButton">
+    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="btnAdd"><i class="layui-icon"></i>
+        添加功能页面
+    </button>
+</div>
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script th:inline="javascript">
+    var selectData;
+    var addCount = 2;
+    var layuiForm;
+    var submitData = [];
+    var submitCount = 0;
+    layui.use(['form'], function () {
+        layuiForm = layui.form;
+        $.ajax({
+            url: '/getSelectValue',
+            dataType: 'json',
+            type: 'post',
+            data: {type: 2, acid: [[${wxApp.acid}]]},
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    if (index == 0) {
+                        $("#pageAddress").val(item.value);
+                    }
+                    $('#page').append(new Option(item.value, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select", "page");
+            }
+        });
+        $.ajax({
+            url: '/getSelectValue',
+            dataType: 'json',
+            type: 'post',
+            data: {type: 3, acid: [[${wxApp.acid}]]},
+            success: function (data) {
+                selectData = data;
+                var firstCategoryIndex = 0;
+                $.each(data, function (index, item) {
+                    if (item.parentId == 0) {
+                        if (firstCategoryIndex == 0) {
+                            $("#firstCategoryName").val(item.value);
+                            onLoadSecondCategory(layui.form, item.id);
+                            firstCategoryIndex = firstCategoryIndex + 1;
+                        }
+                        $('#firstCategory').append(new Option(item.value, item.id));// 下拉菜单里添加元素
+                    }
+                });
+                layui.form.render("select", "firstCategory");
+            }
+        });
+
+        layui.form.on('select(selectFirstCategory)', function (data) {
+            $("#firstCategoryName").val(this.innerText);
+            onLoadSecondCategory(layui.form, data.value);
+        });
+        layui.form.on('select(selectSecondCategory)', function (data) {
+            $("#secondCategoryName").val(this.innerText);
+            onLoadThirdCategory(layui.form, data.value);
+        });
+        layui.form.on('select(selectThirdCategory)', function (data) {
+            $("#thirdCategoryName").val(this.innerText);
+        });
+        //监听提交
+        layui.form.on('submit(formVerify)', function (data) {
+            submitData.push(data.field);
+            if(++submitCount == addCount - 1){
+                var da = {acid:[[${acid}]], wxAppAcId:[[${wxApp.acid}]], wxAppName:[[${wxApp.name}]], submitDataList: submitData};
+                console.log(JSON.stringify(da));
+                $.ajax({
+                    url: '/wxapp/submitCode',
+                    dataType: 'json',
+                    contentType:"application/json",
+                    type: 'post',
+                    data: JSON.stringify(da),
+                    success: function (resultData) {
+                        //console.log(resultData);
+                        //var jsonData = JSON.parse(resultData);
+                        if (resultData.code == 0) {
+                            layer.msg('操作成功', {
+                                icon: 1,
+                                time: 2000
+                            });
+                            var index = layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            layer.close(index);
+                        } else {
+                            submitCount = 0;
+                            layer.alert(resultData.message, {
+                                title: '错误提示'
+                            })
+                        }
+                    }
+                });
+            }
+
+            return false;
+        });
+        // layui.form.val('wxAppInfo', {
+        //     "wxAppName": [[${wxApp.name}]] // "name": "value"
+        //     , "wxAppAcid": [[${wxApp.acid}]]
+        // })
+    });
+
+    function onLoadSecondCategory(form, dataValue) {
+        var showSecondCategory = false;
+        $.each(selectData, function (index, item) {
+            if (item.parentId == dataValue) {
+                if (showSecondCategory == false) {
+                    $("#secondCategoryName").val(item.value);
+                    onLoadThirdCategory(form, item.id);
+                }
+                showSecondCategory = true;
+                $('#secondCategory').html(new Option(item.value, item.id));// 下拉菜单里添加元素
+            }
+        });
+        if (showSecondCategory) {
+            form.render("select", "secondCategory");
+            $("#divSecondCategory").show();
+        }
+    }
+
+    function onLoadThirdCategory(form, dataValue) {
+        var showThirdCategory = false;
+        $.each(selectData, function (index, item) {
+            if (item.parentId == dataValue) {
+                if (showThirdCategory == false) {
+                    $("#thirdCategoryName").val(item.value);
+                }
+                showThirdCategory = true;
+                $('#thirdCategory').html(new Option(item.value, item.id));// 下拉菜单里添加元素
+            }
+        });
+        if (showThirdCategory) {
+            form.render("select", "thirdCategory");
+            $("#divThirdCategory").show();
+        }
+    }
+
+    $(function () {
+        $("#wxAppName").text([[${wxApp.name}]]);
+        $("#wxAppAcid").val([[${wxApp.acid}]]);
+        $('#btnAdd').click(function () {
+            if(addCount > 5){
+                return;
+            }
+            var formId = "formCommit" + addCount;
+            //var subID ="submit(btn"+formId+")";
+            var html = "<div class=\"layui-card-header\">功能页面" + addCount + "</div>";
+            html += "<div class=\"layui-card-body\">";
+            html += "<form class=\"layui-form layui-form-pane\"  lay-filter=\"" + formId + "\" id=\"\"" + formId + "\">";
+            html += $("#formCommit").html();
+            html += "</form>";
+            html += "</div>";
+            $(".layui-card").append(html);
+            layuiForm.render("select", formId);
+            if(addCount == 5){
+                $("#addButton").hide();
+            }
+            addCount = addCount + 1;
+        });
+    })
+</script>
+</body>
+</html>
