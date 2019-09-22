@@ -3,12 +3,13 @@
 <mapper namespace="cn.loftown.wechat.app.code.dao.lf.CarTypeInfoDao">
     <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.CarTypeInfoDTO">
         <id column="acid" jdbcType="INTEGER" property="acid" />
-        <result column="typeAcid" jdbcType="INTEGER" property="typeAcid" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
         <result column="carTypeAcid" jdbcType="INTEGER" property="carTypeAcid" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="title" jdbcType="VARCHAR" property="title" />
         <result column="banner" jdbcType="VARCHAR" property="banner" />
         <result column="storefrontPhone" jdbcType="VARCHAR" property="storefrontPhone" />
+        <result column="status" jdbcType="INTEGER" property="status" />
         <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="updateAdminUser" jdbcType="INTEGER" property="updateAdminUser" />
         <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
@@ -21,31 +22,44 @@
     where acid = #{acid,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeInfoDTO">
-    insert into lf_4s_car_typeinfo (acid, typeAcid, carTypeAcid,
+    insert into lf_4s_car_typeinfo (acid, uniacid, carTypeAcid,
       `name`, title, banner,
-      storefrontPhone, updateTime, updateAdminUser,
+      storefrontPhone,status ,updateTime, updateAdminUser,
       createTime, createAdminUser, detailHtml,
       parameterHtml)
-    values (#{acid,jdbcType=INTEGER}, #{typeAcid,jdbcType=INTEGER}, #{carTypeAcid,jdbcType=INTEGER},
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{carTypeAcid,jdbcType=INTEGER},
       #{name,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{banner,jdbcType=VARCHAR},
-      #{storefrontPhone,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateAdminUser,jdbcType=INTEGER},
+      #{storefrontPhone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateAdminUser,jdbcType=INTEGER},
       #{createTime,jdbcType=TIMESTAMP}, #{createAdminUser,jdbcType=INTEGER}, #{detailHtml,jdbcType=LONGVARCHAR},
       #{parameterHtml,jdbcType=LONGVARCHAR})
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeInfoDTO">
     update lf_4s_car_typeinfo
-    set typeAcid = #{typeAcid,jdbcType=INTEGER},
-      carTypeAcid = #{carTypeAcid,jdbcType=INTEGER},
-      `name` = #{name,jdbcType=VARCHAR},
-      title = #{title,jdbcType=VARCHAR},
-      banner = #{banner,jdbcType=VARCHAR},
-      storefrontPhone = #{storefrontPhone,jdbcType=VARCHAR},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP},
-      updateAdminUser = #{updateAdminUser,jdbcType=INTEGER},
-      createTime = #{createTime,jdbcType=TIMESTAMP},
-      createAdminUser = #{createAdminUser,jdbcType=INTEGER},
-      detailHtml = #{detailHtml,jdbcType=LONGVARCHAR},
-      parameterHtml = #{parameterHtml,jdbcType=LONGVARCHAR}
+    set
+        <if test="name != null">
+          `name` = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="title != null">
+          title = #{title,jdbcType=VARCHAR},
+        </if>
+        <if test="banner != null">
+          banner = #{banner,jdbcType=VARCHAR},
+        </if>
+        <if test="storefrontPhone != null">
+          storefrontPhone = #{storefrontPhone,jdbcType=VARCHAR},
+        </if>
+        <if test="updateTime != null">
+          updateTime = #{updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="updateAdminUser != null">
+          updateAdminUser = #{updateAdminUser,jdbcType=INTEGER},
+        </if>
+        <if test="detailHtml != null">
+          detailHtml = #{detailHtml,jdbcType=LONGVARCHAR},
+        </if>
+        <if test="parameterHtml != null">
+          parameterHtml = #{parameterHtml,jdbcType=LONGVARCHAR}
+        </if>
     where acid = #{acid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -59,6 +73,13 @@
     updateAdminUser, createTime, createAdminUser, detailHtml, parameterHtml
     from lf_4s_car_typeinfo
   </select>
+    <select id="getCarTypeInfoCount" resultType="java.lang.Integer">
+        select count(1)
+        from lf_4s_user_car where uniacid = #{uniacid} and status = #{statusId}
+        <if test="carTypeAcid != null">
+            and carTypeAcid = #{carTypeAcid}
+        </if>
+    </select>
     <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.CarTypeInfoDTO">
         <id column="acid" jdbcType="INTEGER" property="acid" />
         <result column="typeAcid" jdbcType="INTEGER" property="typeacid" />

@@ -1,18 +1,11 @@
-package cn.loftown.wechat.app.code.dto.lf;
+package cn.loftown.wechat.app.code.model.lf;
 
 import lombok.Data;
 
-import java.util.Date;
-
-/**
- * 试驾车详情展示
- */
 @Data
-public class CarTypeInfoDTO {
+public class CarTypeInfoModel {
     private Integer acid;
-
     private Integer uniacid;
-
     private Integer carTypeAcid;
     /**
      * 主标题
@@ -30,16 +23,6 @@ public class CarTypeInfoDTO {
      * 联系号码
      */
     private String storefrontPhone;
-
-    private Integer status;
-
-    private Date updateTime;
-
-    private Integer updateAdminUser;
-
-    private Date createTime;
-
-    private Integer createAdminUser;
     /**
      * 车型详情
      */
@@ -48,4 +31,6 @@ public class CarTypeInfoDTO {
      * 车型参数
      */
     private String parameterHtml;
+
+    private Integer operateAdminUser;
 }

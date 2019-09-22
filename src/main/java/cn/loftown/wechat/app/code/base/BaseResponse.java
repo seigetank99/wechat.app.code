@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 @Data
-public class BaseResponse {
+public class BaseResponse<T> {
     public BaseResponse(){
         this.code = 0;
         this.message = "操作成功";
@@ -21,6 +21,7 @@ public class BaseResponse {
 
     private Integer code;
     private String message;
+    private T data;
 
     public static Integer ok(){
         return 0;

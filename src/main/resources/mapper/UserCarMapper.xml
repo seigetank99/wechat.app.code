@@ -25,13 +25,19 @@
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.UserCarDTO">
     update lf_4s_user_car
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=INTEGER},
-      carTypeAcid = #{carTypeAcid,jdbcType=INTEGER},
-      carNumber = #{carNumber,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=SMALLINT},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP},
-      createTime = #{createTime,jdbcType=TIMESTAMP}
+    set
+        <if test="carTypeAcid != null">
+          carTypeAcid = #{carTypeAcid,jdbcType=INTEGER},
+        </if>
+        <if test="carNumber != null">
+          carNumber = #{carNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="status != null">
+          `status` = #{status,jdbcType=SMALLINT},
+        </if>
+        <if test="updateTime != null">
+          updateTime = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
     where acid = #{acid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -39,9 +45,23 @@
     from lf_4s_user_car
     where acid = #{acid,jdbcType=INTEGER}
   </select>
-    <select id="selectAll" resultMap="BaseResultMap">
+    <select id="getUserCar" resultMap="BaseResultMap">
     select acid, uniacid, userid, carTypeAcid, carNumber, `status`, updateTime, createTime
     from lf_4s_user_car
+    where uniacid = #{uniacid} and userid = #{userId}
+        <if test="statusId != null">
+            and status = #{statusId}
+        </if>
+        <if test="carTypeAcid != null">
+            and carTypeAcid = #{carTypeAcid}
+        </if>
+  </select>
+    <select id="getUserCarCountByUser" resultType="java.lang.Integer">
+    select count(1)
+    from lf_4s_user_car where userid = #{userId} and status = #{statusId}
+    <if test="carNumber != null">
+        and carNumber = #{carNumber}
+    </if>
   </select>
     <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.UserCarDTO">
         <id column="acid" jdbcType="INTEGER" property="acid" />

@@ -33,17 +33,28 @@
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
     update lf_4s_car_type
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      `name` = #{name,jdbcType=VARCHAR},
-      imageUrl = #{imageUrl,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=SMALLINT},
-      typeId = #{typeId,jdbcType=SMALLINT},
-      orderId = #{orderId,jdbcType=INTEGER},
-      proposedPrice = #{proposedPrice,jdbcType=DECIMAL},
-      parentAcid = #{parentAcid,jdbcType=INTEGER},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP},
-      `createUser` = #{createUser,jdbcType=INTEGER},
-      createTime = #{createTime,jdbcType=TIMESTAMP}
+    set
+        <if test="name != null">
+          `name` = #{name,jdbcType=VARCHAR}
+        </if>,
+        <if test="imageUrl != null">
+          imageUrl = #{imageUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="status != null">
+          `status` = #{status,jdbcType=SMALLINT},
+        </if>
+        <if test="orderId != null">
+          orderId = #{orderId,jdbcType=INTEGER},
+        </if>
+        <if test="proposedPrice != null">
+          proposedPrice = #{proposedPrice,jdbcType=DECIMAL},
+        </if>
+        <if test="parentAcid != null">
+          parentAcid = #{parentAcid,jdbcType=INTEGER},
+        </if>
+        <if test="updateTime != null">
+          updateTime = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
     where acid = #{acid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -57,6 +68,16 @@
     parentAcid, updateTime, `createUser`, createTime
     from lf_4s_car_type
   </select>
+    <select id="getCarTypeCount" resultType="java.lang.Integer">
+        select count(1)
+        from lf_4s_user_car where uniacid = #{uniacid} and status = #{statusId}
+        <if test="typeId != null">
+            and typeId = #{typeId}
+        </if>
+        <if test="name != null">
+            and name = #{name}
+        </if>
+    </select>
     <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.CarTypeDTO">
         <id column="acid" jdbcType="INTEGER" property="acid" />
         <result column="uniacid" jdbcType="INTEGER" property="uniacid" />

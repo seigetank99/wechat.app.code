@@ -16,7 +16,7 @@ public class UserCarDTO {
 
     private String carNumber;
 
-    private Short status;
+    private Integer status;
 
     private Date updateTime;
 
