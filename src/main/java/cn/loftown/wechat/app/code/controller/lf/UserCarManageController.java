@@ -27,6 +27,6 @@ public class UserCarManageController {
     }
 
     public BaseResponse getUserCar(@RequestParam("uniacid") Integer uniacid, @RequestParam("userId") Integer userId){
-
+        return new BaseResponse();
     }
 }

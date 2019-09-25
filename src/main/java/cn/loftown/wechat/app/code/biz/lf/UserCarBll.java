@@ -6,17 +6,22 @@ import cn.loftown.wechat.app.code.dao.lf.UserCarDao;
 import cn.loftown.wechat.app.code.dto.lf.CarTypeDTO;
 import cn.loftown.wechat.app.code.dto.lf.CarTypeInfoDTO;
 import cn.loftown.wechat.app.code.dto.lf.UserCarDTO;
+import cn.loftown.wechat.app.code.dto.vo.UserCarVO;
 import cn.loftown.wechat.app.code.enums.CarTypeEnum;
+import cn.loftown.wechat.app.code.enums.OrderStatusEnum;
 import cn.loftown.wechat.app.code.enums.StatusEnum;
 import cn.loftown.wechat.app.code.exception.PredictException;
 import cn.loftown.wechat.app.code.model.lf.CarTypeInfoModel;
 import cn.loftown.wechat.app.code.model.lf.CarTypeModel;
+import cn.loftown.wechat.app.code.model.lf.UserCarModel;
 import cn.loftown.wechat.app.code.util.DescribeTextUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UserCarBll {
@@ -26,6 +31,23 @@ public class UserCarBll {
     CarTypeDao carTypeDao;
     @Autowired
     CarTypeInfoDao carTypeInfoDao;
+
+    /**
+     * 前端展示我的爱车列表
+     * @param userId
+     * @return
+     */
+    public List<UserCarModel> getUserCar(int userId){
+        List<UserCarModel> userCarModels = new ArrayList<>();
+        List<UserCarVO> userCarVOList = userCarDao.getUserCar(userId, OrderStatusEnum.FINISH.getCode(), StatusEnum.ENABLES.getCode(), null);
+        for (UserCarVO userCarVO : userCarVOList){
+            UserCarModel userCarModel = new UserCarModel();
+            BeanUtils.copyProperties(userCarVO, userCarModel);
+            userCarModels.add(userCarModel);
+        }
+        return userCarModels;
+    }
+
     /**
      * 添加爱车
      * @param uniacid

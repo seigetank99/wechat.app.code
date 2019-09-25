@@ -69,6 +69,15 @@ public class HomeController {
         return "wxapp/commit";
     }
     /**
+     * 小程序域名设置页面
+     * @return
+     */
+    @RequestMapping("/wxapp/domain")
+    public String domain(Model model, @RequestParam("acid") Integer acid) throws Exception {
+        model.addAttribute("commitDomainModel", accountWxappBll.getWxAppDomain(acid));
+        return "wxapp/webDomain";
+    }
+    /**
      * 小程序列表页面
      * @return
      */

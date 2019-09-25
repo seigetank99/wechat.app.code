@@ -26,7 +26,7 @@
 
 <script type="text/html" id="barDemo">
     <button type="button" class="layui-btn layui-btn-sm" lay-event="add">发布代码</button>
-    <button type="button" class="layui-btn layui-btn-sm" lay-event="del">关联公众号</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="domain">域名设置</button>
 </script>
 <script src="../layui/layui.js" charset="utf-8"></script>
 <script>
@@ -72,10 +72,22 @@
         });
         table.on('tool(test)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'del') {
-                layer.alert("没这功能", {
-                    title: '提示'
-                })
+            if (obj.event === 'domain') {
+                layer.open({
+                    title: '发布小程序代码',
+                    type: 2,
+                    content: '/wxapp/domain?acid='+data.acid,    // 设置跳转的url，跳转到对应的页面
+                    area: ['400px', '350px'],
+                    btn: ['添加', '取消'],
+                    yes: function (index, layero) {
+                        // FormID.submit()//访问框架内的提交函数，并进行提交前的检查
+                        var formSubmit=layer.getChildFrame('form', index);
+                        // 获取表单中的提交按钮（在我的表单里第一个button按钮就是提交按钮，使用find方法寻找即可）
+                        var submited = formSubmit.find('button')[0];
+                        // 触发点击事件，会对表单进行验证，验证成功则提交表单，失败则返回错误信息
+                        submited.click();
+                    }
+                });
             } else if (obj.event === 'add') {
                 layer.open({
                     title: '发布小程序代码',

@@ -43,23 +43,49 @@
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.AppointmentOrderDTO">
     update lf_4s_appointment_order
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=INTEGER},
-      orderStatus = #{orderStatus,jdbcType=SMALLINT},
-      contactName = #{contactName,jdbcType=VARCHAR},
-      contactMobile = #{contactMobile,jdbcType=VARCHAR},
-      mileage = #{mileage,jdbcType=INTEGER},
-      carTypeName = #{carTypeName,jdbcType=VARCHAR},
-      carNumber = #{carNumber,jdbcType=VARCHAR},
-      appointmentTime = #{appointmentTime,jdbcType=TIMESTAMP},
-      cancelType = #{cancelType,jdbcType=SMALLINT},
-      createTime = #{createTime,jdbcType=TIMESTAMP},
-      confirmTime = #{confirmTime,jdbcType=TIMESTAMP},
-      finishTime = #{finishTime,jdbcType=TIMESTAMP},
-      cancelAdminUser = #{cancelAdminUser,jdbcType=INTEGER},
-      confirmAdminUser = #{confirmAdminUser,jdbcType=INTEGER},
-      finishAdminUser = #{finishAdminUser,jdbcType=INTEGER},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    set
+        <if test="orderStatus != null">
+          orderStatus = #{orderStatus,jdbcType=SMALLINT},
+        </if>
+        <if test="contactName != null">
+          contactName = #{contactName,jdbcType=VARCHAR},
+        </if>
+        <if test="contactMobile != null">
+          contactMobile = #{contactMobile,jdbcType=VARCHAR},
+        </if>
+        <if test="mileage != null">
+          mileage = #{mileage,jdbcType=INTEGER},
+        </if>
+        <if test="carTypeName != null">
+          carTypeName = #{carTypeName,jdbcType=VARCHAR},
+        </if>
+        <if test="carNumber != null">
+          carNumber = #{carNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="appointmentTime != null">
+          appointmentTime = #{appointmentTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="cancelType != null">
+          cancelType = #{cancelType,jdbcType=SMALLINT},
+        </if>
+        <if test="confirmTime != null">
+          confirmTime = #{confirmTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="finishTime != null">
+          finishTime = #{finishTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="cancelAdminUser != null">
+          cancelAdminUser = #{cancelAdminUser,jdbcType=INTEGER},
+        </if>
+        <if test="confirmAdminUser != null">
+          confirmAdminUser = #{confirmAdminUser,jdbcType=INTEGER},
+        </if>
+        <if test="finishAdminUser != null">
+          finishAdminUser = #{finishAdminUser,jdbcType=INTEGER},
+        </if>
+        <if test="updateTime != null">
+          updateTime = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
     where acid = #{acid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -69,84 +95,36 @@
     from lf_4s_appointment_order
     where acid = #{acid,jdbcType=INTEGER}
   </select>
-    <select id="selectAll" resultMap="BaseResultMap">
-    select acid, uniacid, userid, orderStatus, contactName, contactMobile, mileage, carTypeName,
-    carNumber, appointmentTime, cancelType, createTime, confirmTime, finishTime, cancelAdminUser,
-    confirmAdminUser, finishAdminUser, updateTime
-    from lf_4s_appointment_order
+    <select id="getOrderByUser" resultMap="BaseResultMap">
+        select acid, uniacid, userid, orderStatus, contactName, contactMobile, mileage, carTypeName,
+        carNumber, appointmentTime, cancelType, createTime, confirmTime, finishTime, cancelAdminUser,
+        confirmAdminUser, finishAdminUser, updateTime
+        from lf_4s_appointment_order
+        where userid = #{userId}
+        <if test="orderStatus != null">
+            and orderStatus = #{orderStatus}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
   </select>
-    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.AppointmentOrderDTO">
-        <id column="acid" jdbcType="INTEGER" property="acid" />
-        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
-        <result column="userid" jdbcType="INTEGER" property="userid" />
-        <result column="orderStatus" jdbcType="SMALLINT" property="orderstatus" />
-        <result column="contactName" jdbcType="VARCHAR" property="contactname" />
-        <result column="contactMobile" jdbcType="VARCHAR" property="contactmobile" />
-        <result column="mileage" jdbcType="INTEGER" property="mileage" />
-        <result column="carTypeName" jdbcType="VARCHAR" property="cartypename" />
-        <result column="carNumber" jdbcType="VARCHAR" property="carnumber" />
-        <result column="appointmentTime" jdbcType="TIMESTAMP" property="appointmenttime" />
-        <result column="cancelType" jdbcType="SMALLINT" property="canceltype" />
-        <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
-        <result column="confirmTime" jdbcType="TIMESTAMP" property="confirmtime" />
-        <result column="finishTime" jdbcType="TIMESTAMP" property="finishtime" />
-        <result column="cancelAdminUser" jdbcType="INTEGER" property="canceladminuser" />
-        <result column="confirmAdminUser" jdbcType="INTEGER" property="confirmadminuser" />
-        <result column="finishAdminUser" jdbcType="INTEGER" property="finishadminuser" />
-        <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
-    </resultMap>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from lf_4s_appointment_order
-    where acid = #{acid,jdbcType=INTEGER}
-  </delete>
-    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.AppointmentOrderDTO">
-    insert into lf_4s_appointment_order (acid, uniacid, userid,
-      orderStatus, contactName, contactMobile,
-      mileage, carTypeName, carNumber,
-      appointmentTime, cancelType, createTime,
-      confirmTime, finishTime, cancelAdminUser,
-      confirmAdminUser, finishAdminUser, updateTime
-      )
-    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER},
-      #{orderstatus,jdbcType=SMALLINT}, #{contactname,jdbcType=VARCHAR}, #{contactmobile,jdbcType=VARCHAR},
-      #{mileage,jdbcType=INTEGER}, #{cartypename,jdbcType=VARCHAR}, #{carnumber,jdbcType=VARCHAR},
-      #{appointmenttime,jdbcType=TIMESTAMP}, #{canceltype,jdbcType=SMALLINT}, #{createtime,jdbcType=TIMESTAMP},
-      #{confirmtime,jdbcType=TIMESTAMP}, #{finishtime,jdbcType=TIMESTAMP}, #{canceladminuser,jdbcType=INTEGER},
-      #{confirmadminuser,jdbcType=INTEGER}, #{finishadminuser,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.AppointmentOrderDTO">
-    update lf_4s_appointment_order
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=INTEGER},
-      orderStatus = #{orderstatus,jdbcType=SMALLINT},
-      contactName = #{contactname,jdbcType=VARCHAR},
-      contactMobile = #{contactmobile,jdbcType=VARCHAR},
-      mileage = #{mileage,jdbcType=INTEGER},
-      carTypeName = #{cartypename,jdbcType=VARCHAR},
-      carNumber = #{carnumber,jdbcType=VARCHAR},
-      appointmentTime = #{appointmenttime,jdbcType=TIMESTAMP},
-      cancelType = #{canceltype,jdbcType=SMALLINT},
-      createTime = #{createtime,jdbcType=TIMESTAMP},
-      confirmTime = #{confirmtime,jdbcType=TIMESTAMP},
-      finishTime = #{finishtime,jdbcType=TIMESTAMP},
-      cancelAdminUser = #{canceladminuser,jdbcType=INTEGER},
-      confirmAdminUser = #{confirmadminuser,jdbcType=INTEGER},
-      finishAdminUser = #{finishadminuser,jdbcType=INTEGER},
-      updateTime = #{updatetime,jdbcType=TIMESTAMP}
-    where acid = #{acid,jdbcType=INTEGER}
-  </update>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select acid, uniacid, userid, orderStatus, contactName, contactMobile, mileage, carTypeName,
-    carNumber, appointmentTime, cancelType, createTime, confirmTime, finishTime, cancelAdminUser,
-    confirmAdminUser, finishAdminUser, updateTime
-    from lf_4s_appointment_order
-    where acid = #{acid,jdbcType=INTEGER}
-  </select>
-    <select id="selectAll" resultMap="BaseResultMap">
-    select acid, uniacid, userid, orderStatus, contactName, contactMobile, mileage, carTypeName,
-    carNumber, appointmentTime, cancelType, createTime, confirmTime, finishTime, cancelAdminUser,
-    confirmAdminUser, finishAdminUser, updateTime
-    from lf_4s_appointment_order
-  </select>
+    <select id="getOrderByAdmin" resultMap="BaseResultMap">
+        select acid, uniacid, userid, orderStatus, contactName, contactMobile, mileage, carTypeName,
+        carNumber, appointmentTime, cancelType, createTime, confirmTime, finishTime, cancelAdminUser,
+        confirmAdminUser, finishAdminUser, updateTime
+        from lf_4s_appointment_order
+        where uniacid = #{uniacid}
+        <if test="orderStatus != null">
+            and orderStatus = #{orderStatus}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
+    </select>
 </mapper>

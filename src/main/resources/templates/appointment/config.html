@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--../addons/ewei_shopv2/static/css/bootstrap.min.css-->
+    <link href="https://static.loftown.cn/2019/09/04/473cccf2-8321-41c8-8ede-fa5ae9b054a3.css?v=3.3.7" rel="stylesheet">
+    <!--static/css/v3.css-->
+    <link href="https://static.loftown.cn/2019/09/04/23813beb-33a4-4b20-8024-e7d3e964190c.css?v=4.1.0" rel="stylesheet">
+    <!--resource/js/lib/jquery-1.11.1.min.js-->
+    <script src="https://static.loftown.cn/2019/09/03/dbf78b15-f22d-48bc-abd3-c6b9a3359fba.js"></script>
+</head>
+<body>
+
+
+<style type='text/css'>
+    .tabs-container .form-group {
+        overflow: hidden;
+    }
+
+    .tabs-container .tabs-left > .nav-tabs {
+    }
+
+    .tab-goods .nav li {
+        float: left;
+    }
+
+    .spec_item_thumb i {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+
+    .region-goods-details {
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        padding: 0 10px;
+    }
+
+    .region-goods-left {
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        font-size: 14px;
+        padding: 20px 0;
+    }
+
+    .region-goods-right {
+        border-left: 3px solid #fff;
+        padding: 10px 10px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    / / 显示滚动条 white-space: nowrap;
+    / / 表格内容强制不换行 height: 10 px;
+    }
+
+    table.gridtable {
+        font-family: verdana, arial, sans-serif;
+        font-size: 11px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+    }
+
+    table.gridtable th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #dedede;
+    }
+
+    table.gridtable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #ffffff;
+    }
+
+    .feed-activity-list {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .feed-element {
+        float: left;
+        width: 320px;
+        height: 120px;
+        margin-left: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #efefef;
+        padding: 20px;
+    }
+
+    .feed-element::after {
+        display: none
+    }
+
+    .pull-left {
+        width: 100%;
+        float: left;
+        margin-left: 0px;
+    }
+
+    .feed-element .title {
+        font-size: 14px;
+        width: 180px;
+        height: 24px;
+        line-height: 20px;
+        vertical-align: bottom;
+        color: #333;
+        font-weight: bold;
+        margin-left: 20px;
+        float: left;
+    }
+
+    .feed-element .button {
+        font-size: 12px;
+        font-weight: 400;
+        text-align: center;
+        height: 20px;
+        line-height: 12px;
+        vertical-align: bottom;
+        color: #333;
+        font-weight: bold;
+        border-radius: 10px;
+        border: 1px solid #999;
+        margin-top: 0px;
+        background: #fff;
+    }
+
+    .feed-element img.img-circle,
+    .dropdown-messages-box img.img-circle {
+        float: left;
+        width: 60px;
+        height: 60px;
+        border-radius: 4px;
+    }
+
+    .media-body {
+        margin-top: 3px;
+        height: 65px;
+    }
+
+    .text-muted {
+        margin-left: 10px;
+        width: 200px;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+</style>
+<div class="tabs-container tab-goods">
+    <div class="tabs-left">
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#tab_basic">预约配置</a></li>
+            <li><a href="#tab_car">车型配置</a></li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <form action="" method="post" class="form-horizontal form-validate" enctype="multipart/form-data">
+            <div class="tab-pane active" id="tab_basic">
+                <div class="page-content">
+                    <div class="region-goods-details row">
+                        <div class="region-goods-left col-sm-2">
+                            预约配置
+                        </div>
+                        <div class="region-goods-right col-sm-10">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">是否自动确认订单</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="1"
+                                                                       checked="true"/> 是</label>
+
+                                    <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="2"/> 否</label>
+                                    <span class='help-block'>选择"是"后，用户的预约订单直接确认，选择"否"，用户的预约订单需要后台审核。</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">至少提前时间</label>
+                                <div class="col-sm-6 col-xs-6">
+                                    <select id="advanceNum" name='advanceNum' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <select id="advanceType" name='advanceType' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">小时</option>
+                                        <option value="2">天</option>
+                                    </select>
+                                    <span class='help-block'>用户预约时必须提前的时间。1小时就是需要提前1小时，1天就是需要提前1天</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">最长预订天数</label>
+                                <div class="col-sm-6 col-xs-6">
+                                    <select id="reserveNum" name='reserveNum' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
+                                    <select id="reserveType" name='reserveType' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">天</option>
+                                        <option value="2">周</option>
+                                        <option value="3">月</option>
+                                    </select>
+
+                                    <span class='help-block'>用户最长预约天数。1天只能预约今天，1月可以预约当前日期到一个月之内的任意时间</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">预约失效时长</label>
+                                <div class="col-sm-6 col-xs-6">
+                                    <select id="hasInvalid" name='hasInvalid' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">无失效</option>
+                                        <option value="2">有失效</option>
+                                    </select>
+                                    <select id="invalidNum" name='invalidNum' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <select id="invalidType" name='invalidType' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="1" selected="true">小时</option>
+                                        <option value="2">天</option>
+                                    </select>
+                                    <span class='help-block'>用户预约后多久不确认就取消预约订单</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="region-goods-details row">
+                        <div class="region-goods-left col-sm-2">
+                            时间配置
+                        </div>
+                        <div class="region-goods-right col-sm-10">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">起止时间</label>
+                                <div class="col-sm-6 col-xs-6">
+                                    <select id="startTime" name='startTime' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="0">00:00</option>
+                                        <option value="1">01:00</option>
+                                        <option value="2">02:00</option>
+                                        <option value="3">03:00</option>
+                                        <option value="4">04:00</option>
+                                        <option value="5">05:00</option>
+                                        <option value="6">06:00</option>
+                                        <option value="7">07:00</option>
+                                        <option value="8">08:00</option>
+                                        <option value="9" selected="true">09:00</option>
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                        <option value="13">13:00</option>
+                                        <option value="14">14:00</option>
+                                        <option value="15">15:00</option>
+                                        <option value="16">16:00</option>
+                                        <option value="17">17:00</option>
+                                        <option value="18">18:00</option>
+                                        <option value="19">19:00</option>
+                                        <option value="20">20:00</option>
+                                        <option value="21">21:00</option>
+                                        <option value="22">22:00</option>
+                                        <option value="23">23:00</option>
+                                    </select>
+                                    <select id="endTime" name='endTime' class="form-control"
+                                            style='width:120px;display: inline-block'>
+                                        <option value="0">00:00</option>
+                                        <option value="1">01:00</option>
+                                        <option value="2">02:00</option>
+                                        <option value="3">03:00</option>
+                                        <option value="4">04:00</option>
+                                        <option value="5">05:00</option>
+                                        <option value="6">06:00</option>
+                                        <option value="7">07:00</option>
+                                        <option value="8">08:00</option>
+                                        <option value="9">09:00</option>
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                        <option value="13">13:00</option>
+                                        <option value="14">14:00</option>
+                                        <option value="15">15:00</option>
+                                        <option value="16">16:00</option>
+                                        <option value="17">17:00</option>
+                                        <option value="18" selected="true">18:00</option>
+                                        <option value="19">19:00</option>
+                                        <option value="20">20:00</option>
+                                        <option value="21">21:00</option>
+                                        <option value="22">22:00</option>
+                                        <option value="23">23:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label must">时间间隔</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <label class="radio-inline"><input type="radio" name="radTime" value="1"
+                                                                       checked="true"/> 60分钟</label>
+                                    <label class="radio-inline"><input type="radio" name="radTime"
+                                                                       value="2"/>30分钟</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">预订时间</label>
+                                <div class="col-sm-6 col-xs-6">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="ckSelectAll" name="ckSelectAll" value="1"/>
+                                        全选
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"></label>
+                                <div style="width: 100%;padding-left: 15%;">
+                                    <table class="gridtable" id="selectTimeTable">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-9 subtitle">
+                            <input type="button" value="保存配置" id="btnSaveConfig" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="tab-pane" id="tab_car">
+            <div class="page-content">
+                <div class='panel panel-default' style='border:none;'>
+                    <div class="feed-activity-list">
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+
+                        <a class="feed-element" href="" data-name="积分商城">
+						    <span class="pull-left">
+							     <img src="https://shop.loftown.cn/addons/ewei_shopv2/static/images/creditshop.jpg"
+                                      class="img-circle" alt="image">
+                                 <div class="media-body ">
+                                    <span class="title"> <span class="fl">积分商城</span> </span>
+                                    <span class="title" style="margin-top: 10px;">
+                                        <input class="button" type="submit" name="编辑" value="编辑">
+                                        <input class="button" type="submit" name="删除" value="删除"
+                                               style="margin-left: 6px;">
+                                    </span>
+                                </div>
+						    </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeTime();
+        $("#startTime").bind("change", function () {
+            changeTime();
+        });
+        $("#endTime").bind("change", function () {
+            changeTime();
+        });
+        $('input:radio[name="radTime"]').click(function () {
+            changeTime();
+        });
+
+        $("#myTab li").click(function () {
+            $(this).addClass("active").siblings().removeClass("active");
+            var tt = $(this).children().attr("href");
+            $(tt).addClass("active");
+            var ff = $(this).siblings().children().attr("href");
+            $(ff).removeClass("active");
+
+        });
+        $("#ckSelectAll").on("click", function () {
+            var bischecked = $(this).is(':checked');
+            $("#selectTimeTable td :checkbox").prop("checked", bischecked);
+        });
+
+        $("#btnSaveConfig").on("click", function () {
+            $("#selectTimeTable td :checkbox[name=spCodeId]:checked").each(function(i){
+
+            });
+            var data = {
+                autoConfirmOrder : $("input[name='autoConfirmOrder']:checked").val(),
+                advanceNum : $("#advanceNum").val(),
+                advanceType : $("#advanceType").val(),
+                reserveNum : $("#reserveNum").val(),
+                reserveType : $("#reserveType").val(),
+                hasInvalid : $("#hasInvalid").val(),
+                invalidNum : $("#invalidNum").val(),
+                invalidType : $("#invalidType").val(),
+            }
+        });
+    });
+
+    function changeTime() {
+        var startTime = parseInt($("#startTime").val());
+        var endTime = parseInt($("#endTime").val());
+        var hasHour = $("input[name='radTime']:checked").val();
+        $("#ckSelectAll").prop("checked", false);
+
+        var htmlTitle = "<tr><td></td>";
+        var htmlDay1 = "<tr><th>周一</th>";
+        var htmlDay2 = "<tr><th>周二</th>";
+        var htmlDay3 = "<tr><th>周三</th>";
+        var htmlDay4 = "<tr><th>周四</th>";
+        var htmlDay5 = "<tr><th>周五</th>";
+        var htmlDay6 = "<tr><th>周六</th>";
+        var htmlDay7 = "<tr><th>周日</th>";
+
+        for (var i = startTime; i <= endTime; i++) {
+            htmlTitle += "<th>" + i + ":00</th>";
+            htmlDay1 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 1 + "\" name=\"time" + i + "_" + 1 + "\"/></td>";
+            htmlDay2 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 2 + "\" name=\"time" + i + "_" + 2 + "\"/></td>";
+            htmlDay3 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 3 + "\" name=\"time" + i + "_" + 3 + "\"/></td>";
+            htmlDay4 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 4 + "\" name=\"time" + i + "_" + 4 + "\"/></td>";
+            htmlDay5 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 5 + "\" name=\"time" + i + "_" + 5 + "\"/></td>";
+            htmlDay6 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 6 + "\" name=\"time" + i + "_" + 6 + "\"/></td>";
+            htmlDay7 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 7 + "\" name=\"time" + i + "_" + 7 + "\"/></td>";
+            if (hasHour == 2) {
+                htmlTitle += "<th>" + i + ":30</th>";
+                htmlDay1 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 1 + "\" name=\"time" + i + "_5_" + 1 + "\"/></td>";
+                htmlDay2 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 2 + "\" name=\"time" + i + "_5_" + 2 + "\"/></td>";
+                htmlDay3 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 3 + "\" name=\"time" + i + "_5_" + 3 + "\"/></td>";
+                htmlDay4 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 4 + "\" name=\"time" + i + "_5_" + 4 + "\"/></td>";
+                htmlDay5 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 5 + "\" name=\"time" + i + "_5_" + 5 + "\"/></td>";
+                htmlDay6 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 6 + "\" name=\"time" + i + "_5_" + 6 + "\"/></td>";
+                htmlDay7 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 7 + "\" name=\"time" + i + "_5_" + 7 + "\"/></td>";
+            }
+        }
+        htmlTitle += "</tr>";
+        htmlDay1 += "</tr>";
+        htmlDay2 += "</tr>";
+        htmlDay3 += "</tr>";
+        htmlDay4 += "</tr>";
+        htmlDay5 += "</tr>";
+        htmlDay6 += "</tr>";
+        htmlDay7 += "</tr>";
+
+        var html = htmlTitle + htmlDay1 + htmlDay2 + htmlDay3 + htmlDay4 + htmlDay5 + htmlDay6 + htmlDay7;
+        $("#selectTimeTable").html(html);
+    }
+
+</script>
+
+</body>
+</html>

@@ -6,11 +6,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum CarTypeEnum {
+public enum OrderStatusEnum {
     UNKNOWN(-1, "未知"),
-    TEST(1, "试驾"),
-    APPOINTMENT(2, "预约"),
-    MODEL(3,"车型");
+    DRAFT(1, "草稿"),
+    PROCESS(2, "待确认"),
+    CONFIRM(3, "已确认"),
+    FINISH(4, "已完成"),
+    CANCEL(5,"已取消");
 
     private Integer code;
 
@@ -24,13 +26,13 @@ public enum CarTypeEnum {
         return name;
     }
 
-    CarTypeEnum(Integer code, String name){
+    OrderStatusEnum(Integer code, String name){
         this.code = code;
         this.name = name;
     }
 
-    public static CarTypeEnum parse(Integer code){
-        return Arrays.stream(CarTypeEnum.values())
+    public static OrderStatusEnum parse(Integer code){
+        return Arrays.stream(OrderStatusEnum.values())
                 .filter(item -> item.getCode().equals(code))
                 .findFirst()
                 .orElse(UNKNOWN);

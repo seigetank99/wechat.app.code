@@ -12,6 +12,7 @@ import cn.loftown.wechat.app.code.entity.WxappCodeSubmitModel;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
 import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
+import cn.loftown.wechat.app.code.model.CommitDomainModel;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import cn.loftown.wechat.app.code.util.HttpUtil;
 import cn.loftown.wechat.app.code.util.WeChatResultUtil;
@@ -45,11 +46,11 @@ public class AccountWxappBll {
      * @return
      */
     public List<AccountWxappModel> getAccountWxAppByPage(int pageIndex){
-        WxAppCodeSubmitDTO updateDTO = new WxAppCodeSubmitDTO();
-        updateDTO.setAcid(1);
-        updateDTO.setWxCommitCode("0");
-        updateDTO.setWxCommitMsg("ok");
-        wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
+//        WxAppCodeSubmitDTO updateDTO = new WxAppCodeSubmitDTO();
+//        updateDTO.setAcid(1);
+//        updateDTO.setWxCommitCode("0");
+//        updateDTO.setWxCommitMsg("ok");
+//        wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
 
         List<AccountWxappModel> wechatModelList = new ArrayList<>();
         int pageStart = (pageIndex - 1) * 20;
@@ -60,6 +61,95 @@ public class AccountWxappBll {
             }
         }
         return wechatModelList;
+    }
+
+    /**
+     * 设置小程序域名
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse setWxAppDomain(CommitDomainModel model) throws Exception {
+        JSONObject request = new JSONObject();
+        request.put("action", model.getAction());
+        request.put("requestdomain", model.getRequestdomain().split(";"));
+        request.put("wsrequestdomain", model.getWsrequestdomain().split(";"));
+        request.put("uploaddomain", model.getUploaddomain().split(";"));
+        request.put("downloaddomain", model.getDownloaddomain().split(";"));
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(model.getAcid(), AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/modify_domain?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        BaseResponse result = BaseResponse.getInstance(jsonObject);
+
+        if(result.getCode() != BaseResponse.ok()){
+            return result;
+        }
+        request = new JSONObject();
+        request.put("action", model.getAction());
+        request.put("webviewdomain", model.getWebviewdomain().split(";"));
+        response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
+        jsonObject = JSONObject.parseObject(response);
+        result = BaseResponse.getInstance(jsonObject);
+        return result;
+    }
+
+    /**
+     * 查询小程序域名
+     * @param acid
+     * @return
+     * @throws Exception
+     */
+    public CommitDomainModel getWxAppDomain(int acid) throws Exception {
+        AccountWxappDTO accountWxappDTO = accountWxappDao.getModelById(acid);
+        if(accountWxappDTO == null){
+
+        }
+        CommitDomainModel result = new CommitDomainModel();
+        result.setAcid(accountWxappDTO.getAcid());
+        result.setName(accountWxappDTO.getName());
+
+        JSONObject request = new JSONObject();
+        request.put("action", "get");
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(accountWxappDTO.getAcid(), AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/modify_domain?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if(jsonObject.getInteger("errcode") == BaseResponse.ok()){
+            String requestdomain = getWxAppResultUrl(jsonObject.getString("requestdomain"));
+            if(StringUtils.isEmpty(requestdomain)){
+                result.setAction("add");
+            } else {
+                result.setAction("set");
+            }
+            result.setRequestdomain(requestdomain);
+            result.setWsrequestdomain(getWxAppResultUrl(jsonObject.getString("wsrequestdomain")));
+            result.setUploaddomain(getWxAppResultUrl(jsonObject.getString("uploaddomain")));
+            result.setDownloaddomain(getWxAppResultUrl(jsonObject.getString("downloaddomain")));
+
+            response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
+            jsonObject = JSONObject.parseObject(response);
+            if(jsonObject.getInteger("errcode") == BaseResponse.ok()){
+                String webviewdomain = getWxAppResultUrl(jsonObject.getString("webviewdomain"));
+                if(StringUtils.isEmpty(webviewdomain)){
+                    result.setWebAction("add");
+                } else {
+                    result.setWebAction("set");
+                }
+                result.setWebviewdomain(webviewdomain);
+            }
+        }
+        return result;
+    }
+
+    private String getWxAppResultUrl(String url){
+        String result = "";
+        List<String> urlList = JSON.parseArray(url, String.class);
+        if(urlList != null && urlList.size() > 0){
+            for (String u : urlList){
+                result += (u +";");
+            }
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     /**
@@ -197,7 +287,6 @@ public class AccountWxappBll {
             request.put("feedback_stuff", submitModel.getFeedbackStuff());
         }
         request.put("item_list", jsonArray);
-        System.out.println(request.toJSONString());
         String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(submitModel.getWxAppAcId(), AppTypeEnum.WECHATMINIAPP);
         String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/submit_audit?access_token=" + authorizerAccessToken, request.toJSONString());
         JSONObject jsonObject = JSONObject.parseObject(response);

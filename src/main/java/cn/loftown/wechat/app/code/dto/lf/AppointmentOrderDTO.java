@@ -12,7 +12,7 @@ public class AppointmentOrderDTO {
 
     private Integer userid;
 
-    private Short orderStatus;
+    private Integer orderStatus;
 
     private String contactName;
 
@@ -22,11 +22,13 @@ public class AppointmentOrderDTO {
 
     private String carTypeName;
 
+    private Integer userCarAcid;
+
     private String carNumber;
 
     private Date appointmentTime;
 
-    private Short cancelType;
+    private Integer cancelType;
 
     private Date createTime;
 

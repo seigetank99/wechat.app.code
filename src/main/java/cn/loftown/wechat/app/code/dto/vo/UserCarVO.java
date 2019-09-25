@@ -1,11 +1,11 @@
-package cn.loftown.wechat.app.code.model.lf;
+package cn.loftown.wechat.app.code.dto.vo;
 
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
-public class UserCarModel {
+public class UserCarVO {
     private Integer acid;
 
     private Integer userid;

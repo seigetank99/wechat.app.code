@@ -6,6 +6,7 @@ import cn.loftown.wechat.app.code.biz.AccountWxappBll;
 import cn.loftown.wechat.app.code.entity.AccountWxappModel;
 import cn.loftown.wechat.app.code.entity.WxappCodeSubmitModel;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
+import cn.loftown.wechat.app.code.model.CommitDomainModel;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,15 @@ public class WxAppController {
     public BaseResponse submitCode(@RequestBody SubmitCodeRequest request) {
         try {
             return accountWxappBll.submitCode(request);
+        } catch (Exception ex){
+            return new BaseResponse(ex.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/commitDomain", method = RequestMethod.POST)
+    public BaseResponse commitDomain(@RequestBody CommitDomainModel request) {
+        try {
+            return accountWxappBll.setWxAppDomain(request);
         } catch (Exception ex){
             return new BaseResponse(ex.getMessage());
         }

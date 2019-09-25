@@ -45,10 +45,20 @@
     from lf_4s_user_car
     where acid = #{acid,jdbcType=INTEGER}
   </select>
-    <select id="getUserCar" resultMap="BaseResultMap">
-    select acid, uniacid, userid, carTypeAcid, carNumber, `status`, updateTime, createTime
-    from lf_4s_user_car
-    where uniacid = #{uniacid} and userid = #{userId}
+    <select id="getUserCar" resultType="cn.loftown.wechat.app.code.dto.vo.UserCarVO">
+    select
+          u.acid,
+          u.userid,
+          u.carNumber,
+          u.`status`,
+          t.name as carTypeName,
+          t.imageUrl as carTypeImg,
+          o.mileage,
+          o.createTime as lastAppointmentTime
+      from lf_4s_user_car as u
+      left join lf_4s_car_type as t on(u.carTypeAcid=t.acid)
+      left join (select acid, mileage, createTime, userCarAcid from lf_4s_appointment_order where userCarAcid=u.acid and orderStatus=#{orderStatus} order by createTime desc limit 1) as o on(o.userCarAcid=u.acid)
+      where userid = #{userId}
         <if test="statusId != null">
             and status = #{statusId}
         </if>
@@ -62,47 +72,5 @@
     <if test="carNumber != null">
         and carNumber = #{carNumber}
     </if>
-  </select>
-    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.UserCarDTO">
-        <id column="acid" jdbcType="INTEGER" property="acid" />
-        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
-        <result column="userid" jdbcType="INTEGER" property="userid" />
-        <result column="carTypeAcid" jdbcType="INTEGER" property="cartypeacid" />
-        <result column="carNumber" jdbcType="VARCHAR" property="carnumber" />
-        <result column="status" jdbcType="SMALLINT" property="status" />
-        <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
-        <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
-    </resultMap>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from lf_4s_user_car
-    where acid = #{acid,jdbcType=INTEGER}
-  </delete>
-    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.UserCarDTO">
-    insert into lf_4s_user_car (acid, uniacid, userid,
-      carTypeAcid, carNumber, `status`,
-      updateTime, createTime)
-    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER},
-      #{cartypeacid,jdbcType=INTEGER}, #{carnumber,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
-      #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP})
-  </insert>
-    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.UserCarDTO">
-    update lf_4s_user_car
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=INTEGER},
-      carTypeAcid = #{cartypeacid,jdbcType=INTEGER},
-      carNumber = #{carnumber,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=SMALLINT},
-      updateTime = #{updatetime,jdbcType=TIMESTAMP},
-      createTime = #{createtime,jdbcType=TIMESTAMP}
-    where acid = #{acid,jdbcType=INTEGER}
-  </update>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select acid, uniacid, userid, carTypeAcid, carNumber, `status`, updateTime, createTime
-    from lf_4s_user_car
-    where acid = #{acid,jdbcType=INTEGER}
-  </select>
-    <select id="selectAll" resultMap="BaseResultMap">
-    select acid, uniacid, userid, carTypeAcid, carNumber, `status`, updateTime, createTime
-    from lf_4s_user_car
   </select>
 </mapper>
