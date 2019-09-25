@@ -146,17 +146,6 @@
         margin-top: 3px;
         height: 65px;
     }
-
-    .text-muted {
-        margin-left: 10px;
-        width: 200px;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-    }
 </style>
 <div class="tabs-container tab-goods">
     <div class="tabs-left">
@@ -166,192 +155,191 @@
         </ul>
     </div>
     <div class="tab-content">
-        <form action="" method="post" class="form-horizontal form-validate" enctype="multipart/form-data">
-            <div class="tab-pane active" id="tab_basic">
-                <div class="page-content">
-                    <div class="region-goods-details row">
-                        <div class="region-goods-left col-sm-2">
-                            预约配置
-                        </div>
-                        <div class="region-goods-right col-sm-10">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">是否自动确认订单</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="1"
-                                                                       checked="true"/> 是</label>
-
-                                    <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="2"/> 否</label>
-                                    <span class='help-block'>选择"是"后，用户的预约订单直接确认，选择"否"，用户的预约订单需要后台审核。</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">至少提前时间</label>
-                                <div class="col-sm-6 col-xs-6">
-                                    <select id="advanceNum" name='advanceNum' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                    <select id="advanceType" name='advanceType' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">小时</option>
-                                        <option value="2">天</option>
-                                    </select>
-                                    <span class='help-block'>用户预约时必须提前的时间。1小时就是需要提前1小时，1天就是需要提前1天</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">最长预订天数</label>
-                                <div class="col-sm-6 col-xs-6">
-                                    <select id="reserveNum" name='reserveNum' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                    </select>
-                                    <select id="reserveType" name='reserveType' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">天</option>
-                                        <option value="2">周</option>
-                                        <option value="3">月</option>
-                                    </select>
-
-                                    <span class='help-block'>用户最长预约天数。1天只能预约今天，1月可以预约当前日期到一个月之内的任意时间</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">预约失效时长</label>
-                                <div class="col-sm-6 col-xs-6">
-                                    <select id="hasInvalid" name='hasInvalid' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">无失效</option>
-                                        <option value="2">有失效</option>
-                                    </select>
-                                    <select id="invalidNum" name='invalidNum' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                    <select id="invalidType" name='invalidType' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="1" selected="true">小时</option>
-                                        <option value="2">天</option>
-                                    </select>
-                                    <span class='help-block'>用户预约后多久不确认就取消预约订单</span>
-                                </div>
-                            </div>
-                        </div>
+        <div class="tab-pane active" id="tab_basic">
+            <div class="page-content">
+                <div class="region-goods-details row">
+                    <div class="region-goods-left col-sm-2">
+                        预约配置
                     </div>
-                    <div class="region-goods-details row">
-                        <div class="region-goods-left col-sm-2">
-                            时间配置
-                        </div>
-                        <div class="region-goods-right col-sm-10">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">起止时间</label>
-                                <div class="col-sm-6 col-xs-6">
-                                    <select id="startTime" name='startTime' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="0">00:00</option>
-                                        <option value="1">01:00</option>
-                                        <option value="2">02:00</option>
-                                        <option value="3">03:00</option>
-                                        <option value="4">04:00</option>
-                                        <option value="5">05:00</option>
-                                        <option value="6">06:00</option>
-                                        <option value="7">07:00</option>
-                                        <option value="8">08:00</option>
-                                        <option value="9" selected="true">09:00</option>
-                                        <option value="10">10:00</option>
-                                        <option value="11">11:00</option>
-                                        <option value="12">12:00</option>
-                                        <option value="13">13:00</option>
-                                        <option value="14">14:00</option>
-                                        <option value="15">15:00</option>
-                                        <option value="16">16:00</option>
-                                        <option value="17">17:00</option>
-                                        <option value="18">18:00</option>
-                                        <option value="19">19:00</option>
-                                        <option value="20">20:00</option>
-                                        <option value="21">21:00</option>
-                                        <option value="22">22:00</option>
-                                        <option value="23">23:00</option>
-                                    </select>
-                                    <select id="endTime" name='endTime' class="form-control"
-                                            style='width:120px;display: inline-block'>
-                                        <option value="0">00:00</option>
-                                        <option value="1">01:00</option>
-                                        <option value="2">02:00</option>
-                                        <option value="3">03:00</option>
-                                        <option value="4">04:00</option>
-                                        <option value="5">05:00</option>
-                                        <option value="6">06:00</option>
-                                        <option value="7">07:00</option>
-                                        <option value="8">08:00</option>
-                                        <option value="9">09:00</option>
-                                        <option value="10">10:00</option>
-                                        <option value="11">11:00</option>
-                                        <option value="12">12:00</option>
-                                        <option value="13">13:00</option>
-                                        <option value="14">14:00</option>
-                                        <option value="15">15:00</option>
-                                        <option value="16">16:00</option>
-                                        <option value="17">17:00</option>
-                                        <option value="18" selected="true">18:00</option>
-                                        <option value="19">19:00</option>
-                                        <option value="20">20:00</option>
-                                        <option value="21">21:00</option>
-                                        <option value="22">22:00</option>
-                                        <option value="23">23:00</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label must">时间间隔</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <label class="radio-inline"><input type="radio" name="radTime" value="1"
-                                                                       checked="true"/> 60分钟</label>
-                                    <label class="radio-inline"><input type="radio" name="radTime"
-                                                                       value="2"/>30分钟</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">预订时间</label>
-                                <div class="col-sm-6 col-xs-6">
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox" id="ckSelectAll" name="ckSelectAll" value="1"/>
-                                        全选
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"></label>
-                                <div style="width: 100%;padding-left: 15%;">
-                                    <table class="gridtable" id="selectTimeTable">
-                                    </table>
-                                </div>
+                    <div class="region-goods-right col-sm-10">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">是否自动确认订单</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="1"
+                                                                   checked="true"/> 是</label>
+
+                                <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="2"/>
+                                    否</label>
+                                <span class='help-block'>选择"是"后，用户的预约订单直接确认，选择"否"，用户的预约订单需要后台审核。</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"></label>
-                        <div class="col-sm-9 subtitle">
-                            <input type="button" value="保存配置" id="btnSaveConfig" class="btn btn-primary"/>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">至少提前时间</label>
+                            <div class="col-sm-6 col-xs-6">
+                                <select id="advanceNum" name='advanceNum' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <select id="advanceType" name='advanceType' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">小时</option>
+                                    <option value="2">天</option>
+                                </select>
+                                <span class='help-block'>用户预约时必须提前的时间。1小时就是需要提前1小时，1天就是需要提前1天</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">最长预订天数</label>
+                            <div class="col-sm-6 col-xs-6">
+                                <select id="reserveNum" name='reserveNum' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                                <select id="reserveType" name='reserveType' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">天</option>
+                                    <option value="2">周</option>
+                                    <option value="3">月</option>
+                                </select>
+
+                                <span class='help-block'>用户最长预约天数。1天只能预约今天，1月可以预约当前日期到一个月之内的任意时间</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">预约失效时长</label>
+                            <div class="col-sm-6 col-xs-6">
+                                <select id="hasInvalid" name='hasInvalid' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">无失效</option>
+                                    <option value="2">有失效</option>
+                                </select>
+                                <select id="invalidNum" name='invalidNum' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <select id="invalidType" name='invalidType' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="1" selected="true">小时</option>
+                                    <option value="2">天</option>
+                                </select>
+                                <span class='help-block'>用户预约后多久不确认就取消预约订单</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="region-goods-details row">
+                    <div class="region-goods-left col-sm-2">
+                        时间配置
+                    </div>
+                    <div class="region-goods-right col-sm-10">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">起止时间</label>
+                            <div class="col-sm-6 col-xs-6">
+                                <select id="startTime" name='startTime' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="0">00:00</option>
+                                    <option value="1">01:00</option>
+                                    <option value="2">02:00</option>
+                                    <option value="3">03:00</option>
+                                    <option value="4">04:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9" selected="true">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                </select>
+                                <select id="endTime" name='endTime' class="form-control"
+                                        style='width:120px;display: inline-block'>
+                                    <option value="0">00:00</option>
+                                    <option value="1">01:00</option>
+                                    <option value="2">02:00</option>
+                                    <option value="3">03:00</option>
+                                    <option value="4">04:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18" selected="true">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label must">时间间隔</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline"><input type="radio" name="radTime" value="1"
+                                                                   checked="true"/> 60分钟</label>
+                                <label class="radio-inline"><input type="radio" name="radTime"
+                                                                   value="2"/>30分钟</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">预订时间</label>
+                            <div class="col-sm-6 col-xs-6">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="ckSelectAll" name="ckSelectAll" value="1"/>
+                                    全选
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div style="width: 100%;padding-left: 15%;">
+                                <table class="gridtable" id="selectTimeTable">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="col-sm-9 subtitle">
+                        <input type="button" value="保存配置" id="btnSaveConfig" class="btn btn-primary"/>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
         <div class="tab-pane" id="tab_car">
             <div class="page-content">
                 <div class='panel panel-default' style='border:none;'>
@@ -469,6 +457,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         changeTime();
+        hasInvalid();
         $("#startTime").bind("change", function () {
             changeTime();
         });
@@ -479,11 +468,16 @@
             changeTime();
         });
 
+        $("#hasInvalid").bind("change", function () {
+            hasInvalid();
+        });
+
         $("#myTab li").click(function () {
             $(this).addClass("active").siblings().removeClass("active");
             var tt = $(this).children().attr("href");
             $(tt).addClass("active");
             var ff = $(this).siblings().children().attr("href");
+            console.log(ff);
             $(ff).removeClass("active");
 
         });
@@ -493,21 +487,40 @@
         });
 
         $("#btnSaveConfig").on("click", function () {
-            $("#selectTimeTable td :checkbox[name=spCodeId]:checked").each(function(i){
-
+            var viewData = {};
+            $("#selectTimeTable td :checkbox:checked").each(function (i) {
+                var data = $(this).attr("name").split("_");
+                if (!viewData[data[2]]) {
+                    viewData[data[2]] = [];
+                }
+                viewData[data[2]].push(data[1]);
             });
+            //console.log(JSON.stringify(viewData));
             var data = {
-                autoConfirmOrder : $("input[name='autoConfirmOrder']:checked").val(),
-                advanceNum : $("#advanceNum").val(),
-                advanceType : $("#advanceType").val(),
-                reserveNum : $("#reserveNum").val(),
-                reserveType : $("#reserveType").val(),
-                hasInvalid : $("#hasInvalid").val(),
-                invalidNum : $("#invalidNum").val(),
-                invalidType : $("#invalidType").val(),
+                autoConfirmOrder: $("input[name='autoConfirmOrder']:checked").val(),
+                advanceNum: $("#advanceNum").val(),
+                advanceType: $("#advanceType").val(),
+                reserveNum: $("#reserveNum").val(),
+                reserveType: $("#reserveType").val(),
+                hasInvalid: $("#hasInvalid").val(),
+                invalidNum: $("#invalidNum").val(),
+                invalidType: $("#invalidType").val(),
+                SelectViewData: viewData
             }
+
+            console.log(data);
         });
     });
+
+    function hasInvalid() {
+        if ($("#hasInvalid").val() == 1) {
+            $("#invalidNum").hide();
+            $("#invalidType").hide();
+        } else {
+            $("#invalidNum").show();
+            $("#invalidType").show();
+        }
+    }
 
     function changeTime() {
         var startTime = parseInt($("#startTime").val());
@@ -526,22 +539,22 @@
 
         for (var i = startTime; i <= endTime; i++) {
             htmlTitle += "<th>" + i + ":00</th>";
-            htmlDay1 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 1 + "\" name=\"time" + i + "_" + 1 + "\"/></td>";
-            htmlDay2 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 2 + "\" name=\"time" + i + "_" + 2 + "\"/></td>";
-            htmlDay3 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 3 + "\" name=\"time" + i + "_" + 3 + "\"/></td>";
-            htmlDay4 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 4 + "\" name=\"time" + i + "_" + 4 + "\"/></td>";
-            htmlDay5 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 5 + "\" name=\"time" + i + "_" + 5 + "\"/></td>";
-            htmlDay6 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 6 + "\" name=\"time" + i + "_" + 6 + "\"/></td>";
-            htmlDay7 += "<td><input type=\"checkbox\" id=\"time" + i + "_" + 7 + "\" name=\"time" + i + "_" + 7 + "\"/></td>";
+            htmlDay1 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 1 + "\" name=\"time_" + i + "_" + 1 + "\"/></td>";
+            htmlDay2 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 2 + "\" name=\"time_" + i + "_" + 2 + "\"/></td>";
+            htmlDay3 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 3 + "\" name=\"time_" + i + "_" + 3 + "\"/></td>";
+            htmlDay4 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 4 + "\" name=\"time_" + i + "_" + 4 + "\"/></td>";
+            htmlDay5 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 5 + "\" name=\"time_" + i + "_" + 5 + "\"/></td>";
+            htmlDay6 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 6 + "\" name=\"time_" + i + "_" + 6 + "\"/></td>";
+            htmlDay7 += "<td><input type=\"checkbox\" id=\"time_" + i + "_" + 7 + "\" name=\"time_" + i + "_" + 7 + "\"/></td>";
             if (hasHour == 2) {
                 htmlTitle += "<th>" + i + ":30</th>";
-                htmlDay1 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 1 + "\" name=\"time" + i + "_5_" + 1 + "\"/></td>";
-                htmlDay2 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 2 + "\" name=\"time" + i + "_5_" + 2 + "\"/></td>";
-                htmlDay3 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 3 + "\" name=\"time" + i + "_5_" + 3 + "\"/></td>";
-                htmlDay4 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 4 + "\" name=\"time" + i + "_5_" + 4 + "\"/></td>";
-                htmlDay5 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 5 + "\" name=\"time" + i + "_5_" + 5 + "\"/></td>";
-                htmlDay6 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 6 + "\" name=\"time" + i + "_5_" + 6 + "\"/></td>";
-                htmlDay7 += "<td><input type=\"checkbox\" id=\"time" + i + "_5_" + 7 + "\" name=\"time" + i + "_5_" + 7 + "\"/></td>";
+                htmlDay1 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 1 + "\" name=\"time_" + i + ".5_" + 1 + "\"/></td>";
+                htmlDay2 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 2 + "\" name=\"time_" + i + ".5_" + 2 + "\"/></td>";
+                htmlDay3 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 3 + "\" name=\"time_" + i + ".5_" + 3 + "\"/></td>";
+                htmlDay4 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 4 + "\" name=\"time_" + i + ".5_" + 4 + "\"/></td>";
+                htmlDay5 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 5 + "\" name=\"time_" + i + ".5_" + 5 + "\"/></td>";
+                htmlDay6 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 6 + "\" name=\"time_" + i + ".5_" + 6 + "\"/></td>";
+                htmlDay7 += "<td><input type=\"checkbox\" id=\"time_" + i + ".5_" + 7 + "\" name=\"time_" + i + ".5_" + 7 + "\"/></td>";
             }
         }
         htmlTitle += "</tr>";
