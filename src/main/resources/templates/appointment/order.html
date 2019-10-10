@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8"/>
     <title></title>
-
     <!--../addons/ewei_shopv2/static/css/bootstrap.min.css-->
     <link href="https://static.loftown.cn/2019/09/04/473cccf2-8321-41c8-8ede-fa5ae9b054a3.css?v=3.3.7" rel="stylesheet">
     <!--static/css/v3.css-->
@@ -11,290 +10,52 @@
     <!--resource/js/lib/jquery-1.11.1.min.js-->
     <script src="https://static.loftown.cn/2019/09/03/dbf78b15-f22d-48bc-abd3-c6b9a3359fba.js"></script>
     <!--<script src="../static/js/calendar.js"></script>-->
-    <script src="/Users/wctao/loftown/javacode/WeChatAppCode/src/main/resources/static/js/calendar.js"></script>
+    <script src="/js/calendar.js"></script>
     <link href="https://static.loftown.cn/2019/09/04/28d5753a-6bd1-4938-bf35-5ff1dcd1e05a.css?v=4.4.0" rel="stylesheet">
-    <link rel="stylesheet" type="text/css"
-          href="/Users/wctao/loftown/javacode/WeChatAppCode/src/main/resources/static/css/calendar.css">
-    <style type='text/css'>
-        .tabs-container .tabs-left > .nav-tabs {
-        }
+    <link rel="stylesheet" type="text/css" href="/css/calendar.css">
+    <link rel="stylesheet" type="text/css" href="/css/lf_common.css">
 
-        .tab-goods .nav li {
-            float: left;
-        }
-
-        .spec_item_thumb i {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-        }
-
-        table {
-            display: block;
-            overflow-x: auto;
-        / / 显示滚动条 white-space: nowrap;
-        / / 表格内容强制不换行 height: 10 px;
-        }
-
-
-        table.gridtable th {
-            border-width: 1px;
-            padding: 8px;
-            border-style: solid;
-            border-color: #666666;
-            background-color: #dedede;
-        }
-
-        table.gridtable td {
-            border-width: 1px;
-            padding: 8px;
-            border-style: solid;
-            border-color: #666666;
-            background-color: #ffffff;
-        }
-
-        .feed-activity-list {
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .feed-element {
-            float: left;
-            width: 45%;
-            height: 100%;
-            margin-left: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #efefef;
-            padding: 20px;
-        }
-
-        .order-element {
-            float: left;
-            width: 100%;
-            height: 200px;
-            margin-left: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #efefef;
-            padding: 20px;
-        }
-
-        .feed-element::after {
-            display: none
-        }
-
-        .pull-left {
-            width: 100%;
-            float: left;
-            margin-left: 0px;
-        }
-
-        .feed-element .title {
-            font-size: 14px;
-            width: 180px;
-            height: 24px;
-            line-height: 20px;
-            vertical-align: bottom;
-            color: #333;
-            font-weight: bold;
-            margin-left: 20px;
-            float: left;
-        }
-
-        .feed-element .button {
-            font-size: 12px;
-            font-weight: 400;
-            text-align: center;
-            height: 20px;
-            line-height: 12px;
-            vertical-align: bottom;
-            color: #333;
-            font-weight: bold;
-            border-radius: 10px;
-            border: 1px solid #999;
-            margin-top: 0px;
-            background: #fff;
-        }
-
-        .media-body {
-            margin-top: 3px;
-            height: 65px;
-        }
-    </style>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js" charset="utf-8"></script>
 </head>
 <body>
 <div class="tabs-container tab-goods">
     <div class="tabs-left">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#tab_date">预约日历</a></li>
-            <li><a href="#tab_1">待确认</a></li>
-            <li><a href="#tab_2">已确认</a></li>
-            <li><a href="#tab_3">已完成</a></li>
+            <li><a href="#tab_2">待确认</a></li>
+            <li><a href="#tab_3">已确认</a></li>
+            <li><a href="#tab_4">已完成</a></li>
             <li><a href="#tab_0">全部订单</a></li>
         </ul>
+    </div>
+    <div class="loader" style="display: none">
+        <div class="loading-2">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </div>
     </div>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_date">
             <div class="page-content">
-                <div class='panel panel-default' style='border:none;'>
+                <div class='panel-default' style='border:none;'>
                     <div class="feed-activity-list">
-                        <div class="feed-element">
+                        <div class="feed-element-calendar">
                             <div id="calendar"></div>
                         </div>
-                        <div class="feed-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title"> <span class="fl">待确认</span> </span>
-                                     <span class="title"> <span class="fl">更多(8)></span> </span>
-                                     <br/>
-                                     <span class="title"> <span class="fl">订单号：1002001112</span> </span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>车辆信息</td><td>三菱翼神 苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                        <input class="button" type="button" name="确认预约" value="确认预约">
-                                        <input class="button" type="button" name="取消预约" value="取消预约"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
-                        </div>
-                        <div class="feed-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title"> <span class="fl">待确认</span> </span>
-                                     <span class="title"> <span class="fl">更多(8)></span> </span>
-                                     <br/>
-                                     <span class="title"> <span class="fl">订单号：1002001112</span> </span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>车辆信息</td><td>三菱翼神 苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                        <input class="button" type="button" name="确认预约" value="确认预约">
-                                        <input class="button" type="button" name="取消预约" value="取消预约"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
-                        </div>
-                        <div class="feed-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title"> <span class="fl">待确认</span> </span>
-                                     <span class="title"> <span class="fl">更多(8)></span> </span>
-                                     <br/>
-                                     <span class="title"> <span class="fl">订单号：1002001112</span> </span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>车辆信息</td><td>三菱翼神 苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                        <input class="button" type="button" name="确认预约" value="确认预约">
-                                        <input class="button" type="button" name="取消预约" value="取消预约"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
+                        <div id="home_order">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane active" id="tab">
+        <div class="tab-pane" id="tab">
             <div class="page-content">
-                <div class='panel panel-default' style='border:none;'>
-                    <div class="feed-activity-list">
-                        <div class="order-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title">订单号：1002001112</span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>车型品牌</td><td>三菱翼神</td></tr>
-                                         <tr><td>车牌号</td><td>苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                         <tr><td>订单状态</td><td>已完成</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                       <span class="title">提交时间：2019.10.01 15:48</span>
-                                        <input class="button" type="button" name="完成保养" value="完成保养"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
-                        </div>
-                        <div class="order-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title">订单号：1002001112</span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>车型品牌</td><td>三菱翼神</td></tr>
-                                         <tr><td>车牌号</td><td>苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                         <tr><td>订单状态</td><td>已完成</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                       <span class="title">提交时间：2019.10.01 15:48</span>
-                                        <input class="button" type="button" name="完成保养" value="完成保养"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
-                        </div>
-                        <div class="order-element">
-						    <span class="pull-left">
-							     <div class="img-circle" >
-                                     <span class="title">订单号：1002001112</span>
-                                     <br/>
-                                     <table>
-                                         <tr><td>联系人姓名</td><td>陆先生</td></tr>
-                                         <tr><td>联系人手机号</td><td>13366775588</td></tr>
-                                         <tr><td>车型品牌</td><td>三菱翼神</td></tr>
-                                         <tr><td>车牌号</td><td>苏L · 0F261</td></tr>
-                                         <tr><td>预约时间</td><td>2019.11.01 14:00</td></tr>
-                                         <tr><td>当前里程数</td><td>34899km</td></tr>
-                                         <tr><td>订单状态</td><td>已完成</td></tr>
-                                     </table>
-                                 </div>
-                                 <div class="media-body ">
-                                    <span class="title" style="margin-top: 10px;">
-                                       <span class="title">提交时间：2019.10.01 15:48</span>
-                                        <input class="button" type="button" name="完成保养" value="完成保养"
-                                               style="margin-left: 6px;">
-                                    </span>
-                                </div>
-						    </span>
-                        </div>
+                <div class='panel-default' style='border:none;'>
+                    <div class="feed-activity-list" id="tabShowOrder">
                     </div>
                 </div>
             </div>
@@ -304,42 +65,459 @@
 </body>
 </html>
 <script>
+    var monthData = [];
+    var layer;
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        layer = layui.layer; //独立版的layer无需执行这一句
+    });
     $(document).ready(function () {
         $("#myTab li").click(function () {
             $(this).addClass("active").siblings().removeClass("active");
             var tt = $(this).children().attr("href");
-            if(tt !="#tab_date") {
-                $(tt.split('_')[0]).addClass("active");
+            if (tt != "#tab_date") {
+                var ttab = tt.split('_');
+                $(ttab[0]).addClass("active");
+                getOrderHtml(ttab[1]);
             } else {
                 $(tt).addClass("active");
             }
 
             var ff = $(this).siblings().children().attr("href");
-            if(ff !="#tab_date") {
+            if (ff != "#tab_date") {
                 $(ff.split('_')[0]).removeClass("active");
             } else {
                 $(ff).removeClass("active");
             }
         });
-    });
+        $(".loader").show();
+        $(".tab-content").hide();
+        var myDate = new Date();
+        var startTime = myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-01 00:00:00";
+        var endTime = new Date().Format("yyyy-MM-dd HH:mm:ss");
+        $.ajax({
+            url: '/lf/appointmentOrder/statistics',
+            dataType: 'json',
+            type: 'post',
+            data: {uniacid: 1, startTime: startTime, endTime: endTime, hasOrderData: true},
+            success: function (resultData) {
+                if (resultData.code == 0) {
+                    if (resultData.data != null && resultData.data.statisticsList != null && resultData.data.statisticsList.length > 0) {
+                        resultData.data.statisticsList.forEach(function (item) {
+                            monthData.push({startDate: item.formatDay, name: item.orderCount + "个订单"});
+                        });
+                    }
+                    var homeOrderHtml = "";
+                    if (resultData.data != null) {
+                        homeOrderHtml += getHomeHtml("待处理", resultData.data.processOrderList, resultData.data.processOrderCount);
+                        homeOrderHtml += getHomeHtml("今日预约", resultData.data.confirmOrderList, resultData.data.confirmOrderCount);
+                    }
+                    $("#home_order").html(homeOrderHtml);
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
 
-
-    var data = [
-        {startDate: "2019-9-01", name: "事件1"},
-        {startDate: "2019-9-02", name: "事件2"},
-        {startDate: "2019-9-03", name: "事件3"},
-        {startDate: "2018-9-10", name: "事件4"},
-    ]
-
-    $("#calendar").calendar({
-        data: data,
-        mode: "month",
-        //  maxEvent: 3,
-        showModeBtn: false,
-        //  newDate: "2018-04-1",
-        cellClick: function (events) {
-            console.log(events);
-            //viewCell的事件列表
-        },
+                $("#calendar").calendar({
+                    data: monthData,
+                    mode: "month",
+                    //  maxEvent: 3,
+                    showModeBtn: false,
+                    //  newDate: "2018-04-1",
+                    cellClick: function (events) {
+                        console.log(events);
+                        //viewCell的事件列表
+                    },
+                })
+                $(".loader").hide();
+                $(".tab-content").show();
+            }
+        });
     })
+
+    function getHomeHtml(orderStatusName, dataList, orderCount) {
+        var processHtml = "";
+        processHtml += "<div class=\"feed-element-title\">";
+        processHtml += "<span class=\"wait_confirm\">" + orderStatusName + "</span>";
+        processHtml += "<span class=\"more\">更多(" + (orderCount == null ? 0 : orderCount) + ")></span>";
+        processHtml += "</div>";
+        processHtml += "<div class=\"feed-element\">";
+        if (dataList != null && dataList.length > 0) {
+            dataList.forEach(function (item) {
+                processHtml += "<span class=\"pull-left\">";
+                if (orderStatusName == "待处理") {
+                    processHtml += "<span class=\"oder_title\">订单号：" + item.acid + "<span class=\"order-state\">" + item.orderStatus.name + "</span></span>";
+                } else {
+                    processHtml += "<span class=\"oder_title\">订单号：" + item.acid + "<input class=\"input-button-finish\" type=\"button\" name=\"确认预约\" value=\"完成保养\"></span>"
+                }
+                processHtml += "<div class=\"order_detail\">";
+                processHtml += "<table>";
+                processHtml += "<tr><td class=\"td-left\">车辆信息</td><td id=\"carInfo" + item.acid + "\" class=\"td-right\">" + item.carTypeName + " " + item.carNumber + "</td></tr>";
+                processHtml += "<tr><td class=\"td-left\">预约时间</td><td class=\"td-right\">" + item.appointmentTime + "</td></tr>";
+                processHtml += "<tr><td class=\"td-left\">联系人姓名</td><td class=\"td-right\">" + item.contactName + "</td></tr>";
+                processHtml += "<tr><td class=\"td-left\">联系人手机号</td><td class=\"td-right\">" + item.contactMobile + "</td></tr>";
+                processHtml += "<tr><td class=\"td-left\">当前里程数</td><td class=\"td-right\">" + item.mileage + "KM</td></tr>";
+                processHtml += "</table>";
+                processHtml += "</div>";
+                if (orderStatusName == "待处理") {
+                    processHtml += "<div class=\"line-button\">";
+                    processHtml += "<input class=\"input-button-confirm\" onclick=\"confirmOrder(" + item.acid + ")\" type=\"button\" name=\"确认预约\" value=\"确认预约\">";
+                    processHtml += "<input class=\"input-button-cancel\" onclick=\"cancelOrder(" + item.acid + ")\" type=\"button\" name=\"取消预约\" value=\"取消预约\">";
+                    processHtml += "</div>";
+                }
+                processHtml += "</span>";
+            });
+        } else {
+            processHtml += "<span class=\"pull-left\">";
+            processHtml += "<div class=\"no_order\">";
+            processHtml += "<img class=\"no_order_img\" src=\"http://shop-img.loftown.cn/images/1/2019/10/v4o1151it1OJrzr1L9QscJST4JnKqK.png\">";
+            processHtml += "<span class=\"no_order_text\">暂无订单</span>";
+            processHtml += "</div>";
+            processHtml += "</span>";
+        }
+        processHtml += "</div>";
+        return processHtml;
+    }
+
+    function getOrderHtml(orderStatus) {
+        $(".loader").show();
+        $(".tab-content").hide();
+        $.ajax({
+            url: '/lf/appointmentOrder/get',
+            dataType: 'json',
+            type: 'post',
+            data: {uniacid: 1, orderStatus: orderStatus, pageIndex: 1, pageSize: 10},
+            success: function (resultData) {
+                var html = "";
+                if (resultData.code == 0) {
+                    if (resultData.data != null && resultData.data.length > 0) {
+                        resultData.data.forEach(function (item) {
+                            html += "<div class=\"feed-orderlist-element\">";
+                            html += "<span class=\"pull-left\">";
+                            html += "<span class=\"oder_title\">订单号：" + item.acid + "</span>";
+                            html += "<div class=\"order_detail_list\" >";
+                            html += "<table class=\"line_bottom\">";
+                            html += "<tr class=\"tr-width\">";
+                            html += "<td class=\"td-title\">联系人姓名</td>";
+                            html += "<td class=\"td-title\">联系人手机号</td>";
+                            html += "<td class=\"td-title\">车型品牌</td>";
+                            html += "<td class=\"td-title\">车牌号</td>";
+                            html += "<td class=\"td-title\">预约时间</td>";
+                            html += "<td class=\"td-title\">当前里程数</td>";
+                            html += "<td class=\"td-title\">订单状态</td>";
+                            html += "</tr>";
+                            html += "<tr class=\"tr-width\">";
+                            html += "<td class=\"td-content\">" + item.contactName + "</td>";
+                            html += "<td class=\"td-content\">" + item.contactMobile + "</td>";
+                            html += "<td class=\"td-content\">" + item.carTypeName + "</td>";
+                            html += "<td class=\"td-content\">" + item.carNumber + "</td>";
+                            html += "<td class=\"td-content\">" + item.appointmentTime + "</td>";
+                            html += "<td class=\"td-content\">" + item.mileage + "KM</td>";
+                            html += "<td class=\"td-content\">" + item.orderStatus.name + "</td>";
+                            html += "</tr>";
+                            html += "</table>";
+                            html += "</div>";
+                            html += "<div class=\"line-button-list\">";
+                            html += "<div class=\"submit_time\">提交时间：" + item.createTime + "</div>";
+                            if (item.orderStatus.code == 2) {
+                                html += "<input class=\"input-button-cancel-list\" onclick=\"cancelOrder(" + item.acid + ")\" type=\"button\" name=\"取消预约\" value=\"取消预约\">";
+                                html += "<input class=\"input-button-confirm-list\" onclick=\"confirmOrder(" + item.acid + ")\" type=\"button\" name=\"确认预约\" value=\"确认预约\">";
+                                html += "<input class=\"input-button-modify-list\" onclick=\"modifyOrder(" + item.acid + ")\" type=\"button\" name=\"修改订单\" value=\"修改订单\">";
+                            } else if (item.orderStatus.code == 3) {
+                                html += "<input class=\"input-button-confirm-list\" onclick=\"finishOrder(" + item.acid + ")\" type=\"button\" name=\"完成保养\" value=\"完成保养\">"
+                            } else if (item.orderStatus.code == 5) {
+                                html += "<div class=\"cancel_reason\">取消原因：" + item.cancelType.name + "</div>"
+                            }
+                            html += "</div>";
+                            html += "</span>";
+                            html += "</div>";
+                        });
+                    } else {
+                        html += "<div class=\"feed-orderlist-element\">";
+                        html += "<span class=\"pull-left\">";
+                        html += "<div class=\"no_order\">";
+                        html += "<img class=\"no_order_list_img\" src=\"http://shop-img.loftown.cn/images/1/2019/10/v4o1151it1OJrzr1L9QscJST4JnKqK.png\">";
+                        html += "<span class=\"no_order_list_text\">暂无订单</span>";
+                        html += "</div>";
+                        html += "</span>";
+                        html += "</div>";
+                    }
+                } else {
+                    html += "<div class=\"feed-orderlist-element\">";
+                    html += "<span class=\"pull-left\">";
+                    html += "<div class=\"no_order\">";
+                    html += "<img class=\"no_order_list_img\" src=\"http://shop-img.loftown.cn/images/1/2019/10/v4o1151it1OJrzr1L9QscJST4JnKqK.png\">";
+                    html += "<span class=\"no_order_list_text\">哎呀，系统出现了一些小问题，请刷新下试试～</span>";
+                    html += "</div>";
+                    html += "</span>";
+                    html += "</div>";
+                }
+                $("#tabShowOrder").html(html);
+                $(".loader").hide();
+                $(".tab-content").show();
+            }
+        });
+    }
+
+    function confirmOrder(acid) {
+        var html = "";
+        $(this).hide();
+        $.ajax({
+            url: '/lf/appointmentOrder/getDetail',
+            dataType: 'json',
+            type: 'post',
+            data: {acid: acid},
+            success: function (resultData) {
+                if (resultData.code == 0 && resultData.data != null) {
+                    html += "<div class=\"order_detail\">";
+                    html += "<table>";
+                    html += "<tr><td class=\"td-left\">车辆信息</td><td class=\"td-right\">" + resultData.data.carTypeName + " " + resultData.data.carNumber + "</td></tr>";
+                    html += "<tr><td class=\"td-left\">预约时间</td><td class=\"td-right\">" + resultData.data.appointmentTime + "</td></tr>";
+                    html += "<tr><td class=\"td-left\">请确认客户预约信息</td><td class=\"td-right\"></td></tr>";
+                    html += "</table>";
+                    html += "</div>";
+                    layer.open({
+                        title: '确认预约',
+                        content: html,    // 设置跳转的url，跳转到对应的页面
+                        area: ['350px', '240px'],
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            $.ajax({
+                                url: '/lf/appointmentOrder/modify',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {acid: acid, orderStatusCode: 3},
+                                success: function (resultData) {
+                                    if (resultData.code == 0) {
+                                        layer.msg('操作成功', {
+                                            icon: 1,
+                                            time: 2000
+                                        });
+                                    } else {
+                                        layer.alert(resultData.message, {
+                                            title: '提示'
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+            }
+        });
+    }
+
+    function cancelOrder(acid) {
+        var html = "";
+        $.ajax({
+            url: '/lf/appointmentOrder/getDetail',
+            dataType: 'json',
+            type: 'post',
+            data: {acid: acid},
+            success: function (resultData) {
+                if (resultData.code == 0 && resultData.data != null) {
+                    html += "<span class=\"oder_title\">请选择取消预约的原因</span>";
+                    html += "<div class=\"order_detail\">";
+                    html += "<table>";
+                    html += "<tr><td class=\"td-left\"><label class=\"radio-inline\"><input type=\"radio\" name=\"orderCancelType\" value=\"1\" checked=\"true\"/> 取消保养计划</label></td></tr>";
+                    html += "<tr><td class=\"td-left\"><label class=\"radio-inline\"><input type=\"radio\" name=\"orderCancelType\" value=\"2\"/> 预约信息填写有误</label></td></tr>";
+                    html += "<tr><td class=\"td-left\"><label class=\"radio-inline\"><input type=\"radio\" name=\"orderCancelType\" value=\"3\"/> 时间与其它事情冲突</label></td></tr>";
+                    html += "<tr><td class=\"td-left\"><label class=\"radio-inline\"><input type=\"radio\" name=\"orderCancelType\" value=\"4\"/> 其它原因</label></td></tr>";
+                    html += "</table>";
+                    html += "</div>";
+                    layer.open({
+                        title: '取消预约',
+                        content: html,
+                        area: ['350px', '320px'],
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            $.ajax({
+                                url: '/lf/appointmentOrder/modify',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {acid: acid, orderStatusCode: 5, cancelTypeCode: parseInt($("input[name='orderCancelType']:checked").val())},
+                                success: function (resultData) {
+                                    if (resultData.code == 0) {
+                                        layer.msg('操作成功', {
+                                            icon: 1,
+                                            time: 2000
+                                        });
+                                    } else {
+                                        layer.alert(resultData.message, {
+                                            title: '提示'
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+            }
+        });
+    }
+
+    function finishOrder(acid) {
+        var html = "";
+        $.ajax({
+            url: '/lf/appointmentOrder/getDetail',
+            dataType: 'json',
+            type: 'post',
+            data: {acid: acid},
+            success: function (resultData) {
+                if (resultData.code == 0 && resultData.data != null) {
+                    html += "<div class=\"order_detail\">";
+                    html += "<table>";
+                    html += "<tr><td class=\"td-left\">确认客户已经完成保养服务</td></tr>";
+                    html += "</table>";
+                    html += "</div>";
+                    layer.open({
+                        title: '完成保养',
+                        content: html,
+                        area: ['350px', '220px'],
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            $.ajax({
+                                url: '/lf/appointmentOrder/modify',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {acid: acid, orderStatusCode: 4},
+                                success: function (resultData) {
+                                    if (resultData.code == 0) {
+                                        layer.msg('操作成功', {
+                                            icon: 1,
+                                            time: 2000
+                                        });
+                                    } else {
+                                        layer.alert(resultData.message, {
+                                            title: '提示'
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+            }
+        });
+    }
+
+    function modifyOrder(acid) {
+        var html = "";
+        $.ajax({
+            url: '/lf/appointmentOrder/getDetail',
+            dataType: 'json',
+            type: 'post',
+            data: {acid: acid},
+            success: function (resultData) {
+                if (resultData.code == 0 && resultData.data != null) {
+                    html += "<div class=\"order_detail\">";
+                    html += "<table>";
+                    html += "<tr><td class=\"td-left\">车型名称</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyCarTypeName' value='" + resultData.data.carTypeName + "'></td></tr>";
+                    html += "<tr><td class=\"td-left\">车牌号码</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyCarNumber' value='" + resultData.data.carNumber + "'></td></tr>";
+                    html += "<tr><td class=\"td-left\">预约时间</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyAppointmentTime' value='" + resultData.data.appointmentTime + "'></td></tr>";
+                    html += "<tr><td class=\"td-left\">联系人姓名</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyContactName' value='" + resultData.data.contactName + "'></td></tr>";
+                    html += "<tr><td class=\"td-left\">联系人手机号</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyContactMobile' value='" + resultData.data.contactMobile + "'></td></tr>";
+                    html += "<tr><td class=\"td-left\">当前里程数</td><td class=\"td-right\"><input type='text' class=\"form-control\" id='modifyMileage' value='" + resultData.data.mileage + "'></td></tr>";
+                    html += "</table>";
+                    html += "</div>";
+                    layer.open({
+                        title: '修改订单',
+                        content: html,
+                        area: ['350px', '400px'],
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            var data = {
+                                acid: acid,
+                                carTypeName: $("#modifyCarTypeName").val(),
+                                carNumber: $("#modifyCarNumber").val(),
+                                appointmentTime: $("#modifyAppointmentTime").val(),
+                                contactName: $("#modifyContactName").val(),
+                                contactMobile: $("#modifyContactMobile").val(),
+                                mileage: $("#modifyMileage").val()
+                            };
+                            $.ajax({
+                                url: '/lf/appointmentOrder/modify',
+                                dataType: 'json',
+                                type: 'post',
+                                data: data,
+                                success: function (resultData) {
+                                    if (resultData.code == 0) {
+                                        layer.msg('操作成功', {
+                                            icon: 1,
+                                            time: 2000
+                                        });
+                                    } else {
+                                        layer.alert(resultData.message, {
+                                            title: '提示'
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+            }
+        });
+    }
+
+    function getOrderDetail(acid){
+        $.ajax({
+            url: '/lf/appointmentOrder/getDetail',
+            dataType: 'json',
+            type: 'post',
+            data: {acid: acid},
+            success: function (resultData) {
+                if (resultData.code == 0 && resultData.data != null) {
+                    return resultData.data;
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+            }
+        });
+        return null;
+    }
+
+    function hideButtion(){
+
+    }
+
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    // 例子：
+    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
 </script>

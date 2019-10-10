@@ -11,9 +11,9 @@ import cn.loftown.wechat.app.code.enums.CarTypeEnum;
 import cn.loftown.wechat.app.code.enums.OrderStatusEnum;
 import cn.loftown.wechat.app.code.enums.StatusEnum;
 import cn.loftown.wechat.app.code.exception.PredictException;
-import cn.loftown.wechat.app.code.model.lf.CarTypeInfoModel;
-import cn.loftown.wechat.app.code.model.lf.CarTypeModel;
-import cn.loftown.wechat.app.code.model.lf.UserCarModel;
+import cn.loftown.wechat.app.code.entity.lf.CarTypeInfoModel;
+import cn.loftown.wechat.app.code.entity.lf.CarTypeModel;
+import cn.loftown.wechat.app.code.entity.lf.UserCarModel;
 import cn.loftown.wechat.app.code.util.DescribeTextUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,29 +50,26 @@ public class UserCarBll {
 
     /**
      * 添加爱车
-     * @param uniacid
-     * @param userId
-     * @param carType
-     * @param carNumber
+     * @param model
      */
-    public void addUserCar(int uniacid, int userId, int carType, String carNumber){
-        CarTypeDTO carTypeDTO = carTypeDao.selectByPrimaryKey(carType);
+    public void addUserCar(UserCarModel model){
+        CarTypeDTO carTypeDTO = carTypeDao.selectByPrimaryKey(model.getCarTypeId());
         if(carTypeDTO == null || carTypeDTO.getStatus() != StatusEnum.ENABLES.getCode() || carTypeDTO.getTypeId() != CarTypeEnum.APPOINTMENT.getCode()){
             throw new PredictException(DescribeTextUtil.SYSTEM_ERROR);
         }
-        if(userCarDao.getUserCarCountByUser(userId, StatusEnum.ENABLES.getCode(), carNumber) > 0){
-            throw new PredictException(String.format("您已经添加过车牌为：%s的爱车了哟", carNumber));
+        if(userCarDao.getUserCarCountByUser(model.getUserId(), StatusEnum.ENABLES.getCode(), model.getCarNumber()) > 0){
+            throw new PredictException(String.format("您已经添加过车牌为：%s的爱车了哟", model.getCarNumber()));
         }
-        if(userCarDao.getUserCarCountByUser(userId, StatusEnum.ENABLES.getCode(), null) >= 20){
+        if(userCarDao.getUserCarCountByUser(model.getUserId(), StatusEnum.ENABLES.getCode(), null) >= 20){
             throw new PredictException("每个人最多只能添加20辆爱车哟");
         }
         UserCarDTO userCarDTO = new UserCarDTO();
-        userCarDTO.setCarNumber(carNumber);
-        userCarDTO.setUniacid(uniacid);
-        userCarDTO.setCarTypeAcid(carType);
-        userCarDTO.setCreateTime(new Date());
+        userCarDTO.setCarNumber(model.getCarNumber());
+        userCarDTO.setUniacid(model.getUniacid());
+        userCarDTO.setCarTypeAcid(model.getCarTypeId());
+        userCarDTO.setCreateTime(new Date(System.currentTimeMillis()));
         userCarDTO.setUpdateTime(userCarDTO.getCreateTime());
-        userCarDTO.setUserid(userId);
+        userCarDTO.setUserid(model.getUserId());
         userCarDTO.setStatus(StatusEnum.ENABLES.getCode());
         userCarDao.insert(userCarDTO);
     }
@@ -102,7 +99,7 @@ public class UserCarBll {
             updateDTO.setCarTypeAcid(carType);
         }
         updateDTO.setCarNumber(carNumber);
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
         userCarDao.updateByPrimaryKey(updateDTO);
     }
 
@@ -122,7 +119,7 @@ public class UserCarBll {
         UserCarDTO updateDTO = new UserCarDTO();
         updateDTO.setAcid(userCarDTO.getAcid());
         updateDTO.setStatus(StatusEnum.DISABLES.getCode());
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
         userCarDao.updateByPrimaryKey(updateDTO);
     }
 
@@ -147,7 +144,7 @@ public class UserCarBll {
             carTypeDTO.setParentAcid(0);
         }
         carTypeDTO.setStatus(StatusEnum.ENABLES.getCode());
-        carTypeDTO.setCreateTime(new Date());
+        carTypeDTO.setCreateTime(new Date(System.currentTimeMillis()));
         carTypeDTO.setUpdateTime(carTypeDTO.getCreateTime());
         carTypeDao.insert(carTypeDTO);
     }
@@ -162,7 +159,7 @@ public class UserCarBll {
         }
         CarTypeDTO updateDTO = new CarTypeDTO();
         BeanUtils.copyProperties(carTypeModel, updateDTO);
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
 
         carTypeDao.updateByPrimaryKey(updateDTO);
     }
@@ -182,7 +179,7 @@ public class UserCarBll {
         }
         CarTypeDTO updateDTO = new CarTypeDTO();
         updateDTO.setAcid(acid);
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
         updateDTO.setStatus(StatusEnum.DISABLES.getCode());
         carTypeDao.updateByPrimaryKey(updateDTO);
     }
@@ -204,7 +201,7 @@ public class UserCarBll {
         carTypeInfoDTO.setStatus(StatusEnum.ENABLES.getCode());
         carTypeInfoDTO.setCreateAdminUser(carTypeInfoModel.getOperateAdminUser());
         carTypeInfoDTO.setUpdateAdminUser(carTypeInfoModel.getOperateAdminUser());
-        carTypeInfoDTO.setCreateTime(new Date());
+        carTypeInfoDTO.setCreateTime(new Date(System.currentTimeMillis()));
         carTypeInfoDTO.setUpdateTime(carTypeDTO.getCreateTime());
         carTypeDao.insert(carTypeDTO);
     }
@@ -221,7 +218,7 @@ public class UserCarBll {
         CarTypeInfoDTO updateDTO = new CarTypeInfoDTO();
         BeanUtils.copyProperties(carTypeInfoModel, updateDTO);
         updateDTO.setUpdateAdminUser(carTypeInfoModel.getOperateAdminUser());
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
 
         carTypeInfoDao.updateByPrimaryKey(updateDTO);
     }
@@ -242,7 +239,7 @@ public class UserCarBll {
         CarTypeInfoDTO updateDTO = new CarTypeInfoDTO();
         updateDTO.setAcid(acid);
         updateDTO.setUpdateAdminUser(operateAdminUser);
-        updateDTO.setUpdateTime(new Date());
+        updateDTO.setUpdateTime(new Date(System.currentTimeMillis()));
         updateDTO.setStatus(StatusEnum.DISABLES.getCode());
         carTypeInfoDao.updateByPrimaryKey(updateDTO);
     }

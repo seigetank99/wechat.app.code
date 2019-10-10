@@ -1,8 +1,7 @@
 package cn.loftown.wechat.app.code.dao.lf;
 
 import cn.loftown.wechat.app.code.dto.lf.AppointmentConfigDTO;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface AppointmentConfigDao {
     int deleteByPrimaryKey(Integer acid);
@@ -11,7 +10,7 @@ public interface AppointmentConfigDao {
 
     AppointmentConfigDTO selectByPrimaryKey(Integer acid);
 
-    List<AppointmentConfigDTO> selectAll();
+    AppointmentConfigDTO getConfigByUniacid(@Param("uniacid") Integer uniacid);
 
     int updateByPrimaryKey(AppointmentConfigDTO record);
 }

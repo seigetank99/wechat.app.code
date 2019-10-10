@@ -1,4 +1,4 @@
-package cn.loftown.wechat.app.code.model;
+package cn.loftown.wechat.app.code.entity;
 
 import lombok.Data;
 

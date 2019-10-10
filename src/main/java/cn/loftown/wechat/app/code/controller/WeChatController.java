@@ -23,7 +23,7 @@ public class WeChatController {
         response.setData(wechatModels);
         response.setCode(0);
         response.setMessage("");
-        response.setTotal(2);
+        response.setTotal(2L);
         return response;
     }
 }

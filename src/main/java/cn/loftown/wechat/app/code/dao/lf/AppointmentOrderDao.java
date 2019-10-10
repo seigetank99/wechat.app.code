@@ -1,6 +1,7 @@
 package cn.loftown.wechat.app.code.dao.lf;
 
 import cn.loftown.wechat.app.code.dto.lf.AppointmentOrderDTO;
+import cn.loftown.wechat.app.code.dto.vo.OrderStatisticsVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.sql.Timestamp;
@@ -20,4 +21,7 @@ public interface AppointmentOrderDao {
                                              @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
 
     int updateByPrimaryKey(AppointmentOrderDTO record);
+
+    List<OrderStatisticsVO> getOrderStatisticsByDay(@Param("uniacid") Integer uniacid, @Param("orderStatus") Integer orderStatus,
+                                                    @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
 }

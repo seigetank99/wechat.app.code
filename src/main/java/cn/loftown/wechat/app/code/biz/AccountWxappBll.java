@@ -12,7 +12,7 @@ import cn.loftown.wechat.app.code.entity.WxappCodeSubmitModel;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
 import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
-import cn.loftown.wechat.app.code.model.CommitDomainModel;
+import cn.loftown.wechat.app.code.entity.CommitDomainModel;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import cn.loftown.wechat.app.code.util.HttpUtil;
 import cn.loftown.wechat.app.code.util.WeChatResultUtil;

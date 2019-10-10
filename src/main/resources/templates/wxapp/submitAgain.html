@@ -36,13 +36,12 @@
     layui.use(['form'], function () {
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
-            submitData.push(data.field);
             $.ajax({
                 url: '/wxapp/submitCode',
                 dataType: 'json',
                 contentType: "application/json",
                 type: 'post',
-                data: JSON.stringify(da),
+                data: data.field,
                 success: function (resultData) {
                     //console.log(resultData);
                     //var jsonData = JSON.parse(resultData);

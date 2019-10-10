@@ -110,4 +110,21 @@ public class HomeController {
     public String templates() {
         return "component/templates";
     }
+
+    /**
+     * 预约配置
+     * @return
+     */
+    @RequestMapping("/lf/appointment/config")
+    public String appointmentConfig() {
+        return "appointment/config";
+    }
+    /**
+     * 预约订单
+     * @return
+     */
+    @RequestMapping("/lf/appointment/order")
+    public String appointmentOrder() {
+        return "appointment/order";
+    }
 }

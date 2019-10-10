@@ -10,7 +10,7 @@ public class AppointmentOrderDTO {
 
     private Integer uniacid;
 
-    private Integer userid;
+    private Integer userId;
 
     private Integer orderStatus;
 
@@ -35,6 +35,8 @@ public class AppointmentOrderDTO {
     private Date confirmTime;
 
     private Date finishTime;
+
+    private Date cancelTime;
 
     private Integer cancelAdminUser;
 

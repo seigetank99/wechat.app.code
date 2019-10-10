@@ -1,14 +1,18 @@
-package cn.loftown.wechat.app.code.model.lf;
+package cn.loftown.wechat.app.code.entity.lf;
 
+import cn.loftown.wechat.app.code.entity.BaseModel;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
-public class UserCarModel {
-    private Integer acid;
+public class UserCarModel extends BaseModel {
 
-    private Integer userid;
+    private Integer userId;
+    /**
+     * 车型
+     */
+    private Integer carTypeId;
     /**
      * 车型名称
      */

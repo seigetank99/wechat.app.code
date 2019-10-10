@@ -95,8 +95,6 @@ Calendar.prototype = {
             opts.newDate.setFullYear(yearNum);
             opts.mode == "month" ? me._refreshCalendar(opts.newDate) : me._refreshYearCalendar(opts.newDate);
             $(".calendar-year-text").text(yearText);
-
-
         })
         //触发选择月份
         el.on("click", ".calendar-month-select", function (e) {
@@ -121,6 +119,36 @@ Calendar.prototype = {
                 opts.newDate.setDate(opts.newDate.getDate() - 1);
             }
 
+
+            console.log(monthText);
+            console.log(opts.newDate.getFullYear());
+                // var startTime = opts.newDate.getFullYear() + "-" + monthNum + "-01 00:00:00";
+                // var endTime = new Date().Format("yyyy-MM-dd HH:mm:ss");
+                // $.ajax({
+                //     url: '/lf/appointmentOrder/statistics',
+                //     dataType: 'json',
+                //     type: 'post',
+                //     data: {uniacid: 1, startTime: startTime, endTime: endTime, hasOrderData: true},
+                //     success: function (resultData) {
+                //         if (resultData.code == 0) {
+                //             if (resultData.data != null && resultData.data.statisticsList != null && resultData.data.statisticsList.length > 0) {
+                //                 resultData.data.statisticsList.forEach(function (item) {
+                //                     monthData.push({startDate: item.formatDay, name: item.orderCount + "个订单"});
+                //                 });
+                //             }
+                //             var homeOrderHtml = "";
+                //             if (resultData.data != null) {
+                //                 homeOrderHtml += getHomeHtml("待处理", resultData.data.processOrderList, resultData.data.processOrderCount);
+                //                 homeOrderHtml += getHomeHtml("今日预约", resultData.data.confirmOrderList, resultData.data.confirmOrderCount);
+                //             }
+                //             $("#home_order").html(homeOrderHtml);
+                //         } else {
+                //             layer.alert(resultData.message, {
+                //                 title: '提示'
+                //             })
+                //         }
+                //     }
+                // });
             if(monthNum == 1){
                 var data = [
                     { startDate: "2019-1-01", name: "111" },
@@ -130,7 +158,6 @@ Calendar.prototype = {
                 ]
                 me.options.data = data;
             }
-
             me._refreshCalendar(opts.newDate);
             $(".calendar-month-text").text(monthText);
 
@@ -283,11 +310,11 @@ Calendar.prototype = {
         var me = this,
             opts = me.options,
             weekMode = opts.weekMode;
-        var s = '<thead><tr>'
+        var s = '<tbody><tr class="tr-width">'
         weekMode.forEach(function (item) {
-            s += ' <th class="calendar-column-header" title="周' + item + '"><span class="calendar-column-header-inner">' + item + '</span></th>'
+            s += ' <td class="calendar-column-header" title="周' + item + '"><span class="calendar-column-header-inner">' + item + '</span></td>'
         })
-        s += '</thead></tr>'
+        s += '</tbody></tr>'
         return s;
     },
     _createBody: function () {
@@ -308,7 +335,7 @@ Calendar.prototype = {
         var year = newDate.getFullYear(), month = newDate.getMonth();
         //四行三列
         for (var i = 0; i < 4; i++) {
-            s += '<tr>'
+            s += '<tr class="tr-width">'
             for (var l = 0; l < 3; l++) {
                 renderMonth = i * 3 + l;
                 if (month == renderMonth) {
@@ -368,7 +395,7 @@ Calendar.prototype = {
 
         //固定六行
         for (var i = 0; i < 6; i++) {
-            s += '<tr>'
+            s += '<tr class="tr-width">'
             for (var l = 0; l < 7; l++) {
 
                 var year = renderDate.getFullYear();

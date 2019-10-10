@@ -24,7 +24,7 @@ public class ComponentController {
         response.setData(draftsModels);
         response.setCode(0);
         response.setMessage("");
-        response.setTotal(2);
+        response.setTotal(2L);
         return response;
     }
 
@@ -35,7 +35,7 @@ public class ComponentController {
         response.setData(codeBaseModels);
         response.setCode(0);
         response.setMessage("");
-        response.setTotal(2);
+        response.setTotal(2L);
         return response;
     }
 }

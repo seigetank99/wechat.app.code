@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.AppointmentConfigDTO">
         <id column="acid" jdbcType="INTEGER" property="acid"/>
         <result column="uniacid" jdbcType="INTEGER" property="uniacid"/>
-        <result column="autoConfirm" jdbcType="BIT" property="autoConfirm"/>
-        <result column="lastTime" jdbcType="VARCHAR" property="lastTime"/>
-        <result column="langDay" jdbcType="VARCHAR" property="langDay"/>
-        <result column="cancelTime" jdbcType="TIMESTAMP" property="cancelTime"/>
+        <result column="autoConfirm" jdbcType="INTEGER" property="autoConfirm"/>
+        <result column="advanceTime" jdbcType="BIGINT" property="advanceTime"/>
+        <result column="reserveTime" jdbcType="BIGINT" property="reserveTime"/>
+        <result column="invalidTime" jdbcType="BIGINT" property="invalidTime"/>
         <result column="appointmentConfig" jdbcType="VARCHAR" property="appointmentConfig"/>
         <result column="updateUser" jdbcType="INTEGER" property="updateUser"/>
         <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -20,37 +20,49 @@
   </delete>
     <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.AppointmentConfigDTO">
     insert into lf_4s_appointment_config (acid, uniacid, autoConfirm,
-      lastTime, langDay, cancelTime,
+      advanceTime, reserveTime, invalidTime,
       appointmentConfig, updateUser, updateTime,
       `createUser`, createTime)
-    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{autoConfirm,jdbcType=BIT},
-      #{lastTime,jdbcType=VARCHAR}, #{langDay,jdbcType=VARCHAR}, #{cancelTime,jdbcType=TIMESTAMP},
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{autoConfirm,jdbcType=INTEGER},
+      #{advanceTime,jdbcType=BIGINT}, #{reserveTime,jdbcType=BIGINT}, #{invalidTime,jdbcType=BIGINT},
       #{appointmentConfig,jdbcType=VARCHAR}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
       #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.AppointmentConfigDTO">
     update lf_4s_appointment_config
-    set uniacid = #{uniacid,jdbcType=INTEGER},
-      autoConfirm = #{autoConfirm,jdbcType=BIT},
-      lastTime = #{lastTime,jdbcType=VARCHAR},
-      langDay = #{langDay,jdbcType=VARCHAR},
-      cancelTime = #{cancelTime,jdbcType=TIMESTAMP},
-      appointmentConfig = #{appointmentConfig,jdbcType=VARCHAR},
-      updateUser = #{updateUser,jdbcType=INTEGER},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP},
-      `createUser` = #{createUser,jdbcType=INTEGER},
-      createTime = #{createTime,jdbcType=TIMESTAMP}
+    set
+        <if test="autoConfirm != null">
+          autoConfirm = #{autoConfirm,jdbcType=INTEGER}
+        </if>
+        <if test="advanceTime != null">
+          ,advanceTime = #{advanceTime,jdbcType=BIGINT}
+        </if>
+        <if test="reserveTime != null">
+          ,reserveTime = #{reserveTime,jdbcType=BIGINT}
+        </if>
+        <if test="invalidTime != null">
+          ,invalidTime = #{invalidTime,jdbcType=BIGINT}
+        </if>
+        <if test="appointmentConfig != null">
+          ,appointmentConfig = #{appointmentConfig,jdbcType=VARCHAR}
+        </if>
+        <if test="updateUser != null">
+          ,updateUser = #{updateUser,jdbcType=INTEGER}
+        </if>
+        <if test="updateTime != null">
+          ,updateTime = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
     where acid = #{acid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select acid, uniacid, autoConfirm, lastTime, langDay, cancelTime, appointmentConfig,
+    select acid, uniacid, autoConfirm, advanceTime, reserveTime, invalidTime, appointmentConfig,
     updateUser, updateTime, `createUser`, createTime
     from lf_4s_appointment_config
     where acid = #{acid,jdbcType=INTEGER}
   </select>
-    <select id="selectAll" resultMap="BaseResultMap">
-    select acid, uniacid, autoConfirm, lastTime, langDay, cancelTime, appointmentConfig,
+    <select id="getConfigByUniacid" resultMap="BaseResultMap">
+    select acid, uniacid, autoConfirm, advanceTime, reserveTime, invalidTime, appointmentConfig,
     updateUser, updateTime, `createUser`, createTime
-    from lf_4s_appointment_config
+    from lf_4s_appointment_config where uniacid = #{uniacid}
   </select>
 </mapper>

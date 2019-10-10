@@ -6,7 +6,7 @@ import cn.loftown.wechat.app.code.biz.AccountWxappBll;
 import cn.loftown.wechat.app.code.entity.AccountWxappModel;
 import cn.loftown.wechat.app.code.entity.WxappCodeSubmitModel;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
-import cn.loftown.wechat.app.code.model.CommitDomainModel;
+import cn.loftown.wechat.app.code.entity.CommitDomainModel;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class WxAppController {
         response.setData(wxappModelList);
         response.setCode(0);
         response.setMessage("");
-        response.setTotal(2);
+        response.setTotal(2L);
         return response;
     }
 
@@ -37,7 +37,7 @@ public class WxAppController {
         response.setData(wxappModelList);
         response.setCode(0);
         response.setMessage("");
-        response.setTotal(wxappModelList.size());
+        response.setTotal((long) wxappModelList.size());
         return response;
     }
 

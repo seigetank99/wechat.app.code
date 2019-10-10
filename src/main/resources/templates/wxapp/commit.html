@@ -11,9 +11,9 @@
         <div class="layui-form-item">
             <label class="layui-form-label">小程序名称</label>
             <div class="layui-input-inline">
-                <input type="text" readonly="readonly" name="txtWxAppName" id="txtWxAppName" autocomplete="off"
+                <input type="text" readonly="readonly" name="wxAppName" id="wxAppName" autocomplete="off"
                        class="layui-input">
-                <input type="hidden" name="acid" id="acid">
+                <input type="hidden" name="wxAppAcid" id="wxAppAcid">
             </div>
         </div>
         <div class="layui-form-item">
@@ -71,6 +71,7 @@
         });
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
+            console.log(data.field);
             $.ajax({
                 url: '/wxapp/commitCode',
                 dataType: 'json',
@@ -95,8 +96,8 @@
             return false;
         });
         layui.form.val('commitCode', {
-            "txtWxAppName": [[${wxApp.name}]] // "name": "value"
-            , "acid": [[${wxApp.acid}]]
+            "wxAppName": [[${wxApp.name}]] // "name": "value"
+            , "wxAppAcid": [[${wxApp.acid}]]
         })
     });
 </script>

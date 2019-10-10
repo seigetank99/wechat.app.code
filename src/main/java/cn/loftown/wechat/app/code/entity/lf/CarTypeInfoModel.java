@@ -1,11 +1,10 @@
-package cn.loftown.wechat.app.code.model.lf;
+package cn.loftown.wechat.app.code.entity.lf;
 
+import cn.loftown.wechat.app.code.entity.BaseModel;
 import lombok.Data;
 
 @Data
-public class CarTypeInfoModel {
-    private Integer acid;
-    private Integer uniacid;
+public class CarTypeInfoModel extends BaseModel {
     private Integer carTypeAcid;
     /**
      * 主标题

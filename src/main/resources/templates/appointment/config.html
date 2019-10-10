@@ -9,6 +9,7 @@
     <link href="https://static.loftown.cn/2019/09/04/23813beb-33a4-4b20-8024-e7d3e964190c.css?v=4.1.0" rel="stylesheet">
     <!--resource/js/lib/jquery-1.11.1.min.js-->
     <script src="https://static.loftown.cn/2019/09/03/dbf78b15-f22d-48bc-abd3-c6b9a3359fba.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/lf_common.css">
 </head>
 <body>
 
@@ -154,6 +155,15 @@
             <li><a href="#tab_car">车型配置</a></li>
         </ul>
     </div>
+    <div class="loader" style="display: none">
+        <div class="loading-2">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </div>
+    </div>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_basic">
             <div class="page-content">
@@ -170,6 +180,7 @@
 
                                 <label class="radio-inline"><input type="radio" name="autoConfirmOrder" value="2"/>
                                     否</label>
+                                <input type="hidden" id="txtAcid">
                                 <span class='help-block'>选择"是"后，用户的预约订单直接确认，选择"否"，用户的预约订单需要后台审核。</span>
                             </div>
                         </div>
@@ -207,9 +218,9 @@
                                 </select>
                                 <select id="reserveType" name='reserveType' class="form-control"
                                         style='width:120px;display: inline-block'>
-                                    <option value="1" selected="true">天</option>
-                                    <option value="2">周</option>
-                                    <option value="3">月</option>
+                                    <option value="2" selected="true">天</option>
+                                    <option value="3">周</option>
+                                    <option value="4">月</option>
                                 </select>
 
                                 <span class='help-block'>用户最长预约天数。1天只能预约今天，1月可以预约当前日期到一个月之内的任意时间</span>
@@ -456,8 +467,6 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        changeTime();
-        hasInvalid();
         $("#startTime").bind("change", function () {
             changeTime();
         });
@@ -488,16 +497,27 @@
 
         $("#btnSaveConfig").on("click", function () {
             var viewData = {};
+            var acid = 0;
+            if($("#txtAcid").val() != ""){
+                acid = parseInt($("#txtAcid").val());
+            }
+            viewData[0] = [];
+            viewData[0].push(parseInt($("#startTime").val()));
+            viewData[0].push(parseInt($("#endTime").val()));
+                viewData[0].push(parseInt($("input[name='radTime']:checked").val()));
+
             $("#selectTimeTable td :checkbox:checked").each(function (i) {
                 var data = $(this).attr("name").split("_");
-                if (!viewData[data[2]]) {
-                    viewData[data[2]] = [];
+                if (!viewData[parseInt(data[2])]) {
+                    viewData[parseInt(data[2])] = [];
                 }
-                viewData[data[2]].push(data[1]);
+                viewData[parseInt(data[2])].push(parseInt(data[1]));
             });
-            //console.log(JSON.stringify(viewData));
             var data = {
-                autoConfirmOrder: $("input[name='autoConfirmOrder']:checked").val(),
+                acid: acid,
+                uniacid: 1,
+                operateAdminUser: 1,
+                autoConfirm: $("input[name='autoConfirmOrder']:checked").val(),
                 advanceNum: $("#advanceNum").val(),
                 advanceType: $("#advanceType").val(),
                 reserveNum: $("#reserveNum").val(),
@@ -505,12 +525,88 @@
                 hasInvalid: $("#hasInvalid").val(),
                 invalidNum: $("#invalidNum").val(),
                 invalidType: $("#invalidType").val(),
-                SelectViewData: viewData
+                selectViewData: JSON.stringify(viewData)
+            };
+            var url = '/lf/appointmentConfig/add';
+            if(acid > 0){
+                url = '/lf/appointmentConfig/modify';
             }
-
-            console.log(data);
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                type: 'post',
+                data: data,
+                success: function (resultData) {
+                    if (resultData.code == 0) {
+                        alert("保存成功");
+                    } else {
+                        alert(resultData.message);
+                    }
+                }
+            });
         });
+        loadConfigData();
     });
+
+    function loadConfigData() {
+        $(".loader").show();
+        $(".tab-content").hide();
+        $.ajax({
+            url: '/lf/appointmentConfig/get',
+            dataType: 'json',
+            type: 'post',
+            data: {uniacid:1},
+            success: function (resultData) {
+                if (resultData.code == 0) {
+                    if(resultData.data == null){
+                        changeTime();
+                        hasInvalid();
+                        return;
+                    }
+                    $("input[name='autoConfirmOrder'][value=" + resultData.data.autoConfirm + "]").attr("checked",true);
+                    $("#advanceNum").val(resultData.data.advanceNum);
+                    $("#advanceType").val(resultData.data.advanceType);
+                    $("#reserveNum").val(resultData.data.reserveNum);
+                    $("#reserveType").val(resultData.data.reserveType);
+                    $("#hasInvalid").val(resultData.data.hasInvalid);
+                    $("#invalidNum").val(resultData.data.invalidNum);
+                    $("#invalidType").val(resultData.data.invalidType);
+                    $("#txtAcid").val(resultData.data.acid);
+                    var viewData = JSON.parse(resultData.data.selectViewData);
+                    $("#startTime").val(viewData[0][0]);
+                    $("#endTime").val(viewData[0][1]);
+                    $("input[name='radTime'][value=" + viewData[0][2] + "]").attr("checked",true);
+                    changeTime();
+                    hasInvalid();
+                    for (var i = 1; i <=7; i++) {
+                        viewData[i].forEach(function (time) {
+                            $("#time_" + time + "_" + i).prop("checked", true);
+                        });
+                    }
+                } else {
+                    layer.alert(resultData.message, {
+                        title: '提示'
+                    })
+                }
+                $(".loader").hide();
+                $(".tab-content").show();
+            }
+        });
+
+        $.ajax({
+            url: '/lf/appointmentOrder/add',
+            dataType: 'json',
+            type: 'post',
+            data: {uniacid:1,userId:1,userCarAcid:1,contactName:"陶文灿",contactMobile:"18516332005",appointmentTime:1569823200000,mileage:34100},
+            success: function (resultData) {
+                if (resultData.code == 0) {
+                    alert("保存成功");
+                } else {
+                    alert(resultData.message);
+                }
+            }
+        });
+    }
 
     function hasInvalid() {
         if ($("#hasInvalid").val() == 1) {
