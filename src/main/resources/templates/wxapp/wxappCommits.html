@@ -74,7 +74,7 @@
                 });
             } else if (obj.event === 'submit') {
                 layer.open({
-                    title: '提交小程序代码',
+                    title: '提交审核',
                     type: 2,
                     content: '/wxapp/submitAudit?wxAppAcid=' + data.wxAppAcid + '&acid=' + data.acid,    // 设置跳转的url，跳转到对应的页面
                     area: ['450px', '600px'],
@@ -191,7 +191,7 @@
                 })
             } else if(obj.event === 'again'){
                 layer.open({
-                    title: '提交小程序代码',
+                    title: '重审小程序代码',
                     type: 2,
                     content: '/wxapp/submitAgain?wxAppAcid=' + data.wxAppAcid + '&acid=' + data.acid,    // 设置跳转的url，跳转到对应的页面
                     area: ['450px', '600px'],
