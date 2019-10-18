@@ -104,25 +104,52 @@ public class CommonController {
         for(int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             if(!StringUtils.isEmpty(jsonObject.getString("first_class"))){
-                SelectModel selectModel = new SelectModel();
-                selectModel.setId(jsonObject.getString("first_id"));
-                selectModel.setValue(jsonObject.getString("first_class"));
-                selectModel.setParentId("0");
-                selectModels.add(selectModel);
+                boolean hasData = false;
+                for(SelectModel select : selectModels) {
+                    if(select.getId().equals(jsonObject.getString("first_id"))){
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(hasData == false) {
+                    SelectModel selectModel = new SelectModel();
+                    selectModel.setId(jsonObject.getString("first_id"));
+                    selectModel.setValue(jsonObject.getString("first_class"));
+                    selectModel.setParentId("0");
+                    selectModels.add(selectModel);
+                }
             }
             if(!StringUtils.isEmpty(jsonObject.getString("second_class"))){
-                SelectModel selectModel = new SelectModel();
-                selectModel.setId(jsonObject.getString("second_id"));
-                selectModel.setValue(jsonObject.getString("second_class"));
-                selectModel.setParentId(jsonObject.getString("first_id"));
-                selectModels.add(selectModel);
+                boolean hasData = false;
+                for(SelectModel select : selectModels) {
+                    if(select.getParentId().equals(jsonObject.getString("first_id")) && select.getId().equals(jsonObject.getString("second_id"))){
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(hasData == false) {
+                    SelectModel selectModel = new SelectModel();
+                    selectModel.setId(jsonObject.getString("second_id"));
+                    selectModel.setValue(jsonObject.getString("second_class"));
+                    selectModel.setParentId(jsonObject.getString("first_id"));
+                    selectModels.add(selectModel);
+                }
             }
             if(!StringUtils.isEmpty(jsonObject.getString("third_class"))){
-                SelectModel selectModel = new SelectModel();
-                selectModel.setId(jsonObject.getString("third_id"));
-                selectModel.setValue(jsonObject.getString("third_class"));
-                selectModel.setParentId(jsonObject.getString("second_id"));
-                selectModels.add(selectModel);
+                boolean hasData = false;
+                for(SelectModel select : selectModels) {
+                    if(select.getParentId().equals(jsonObject.getString("second_id")) && select.getId().equals(jsonObject.getString("third_id"))){
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(hasData == false) {
+                    SelectModel selectModel = new SelectModel();
+                    selectModel.setId(jsonObject.getString("third_id"));
+                    selectModel.setValue(jsonObject.getString("third_class"));
+                    selectModel.setParentId(jsonObject.getString("second_id"));
+                    selectModels.add(selectModel);
+                }
             }
         }
     }

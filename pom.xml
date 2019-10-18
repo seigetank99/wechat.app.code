@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cn.loftown</groupId>
 	<artifactId>wechat.app.code</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>war</packaging>
 	<name>WeChatAppCode</name>
 	<description>微信小程序代码管理</description>
@@ -91,7 +91,6 @@
 			<artifactId>zip4j</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-
 		<!--解压rar压缩-->
 		<dependency>
 			<groupId>com.github.junrar</groupId>

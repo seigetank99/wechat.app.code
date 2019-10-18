@@ -72,6 +72,8 @@
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
             var page = parent;
+            var btn = $(this);
+            btn.attr({"disabled":"disabled"});
             $.ajax({
                 url: '/wxapp/commitCode',
                 dataType: 'json',
@@ -80,17 +82,21 @@
                 success: function (resultData) {
                     //var jsonData = JSON.parse(data);
                     if (resultData.code == 0) {
-                        layer.msg('操作成功', {
+                        page.layer.msg('操作成功', {
                             icon: 1,
                             time: 2000
+                        }, function(){
+                            var index = page.layer.getFrameIndex(window.name);
+                            page.layer.close(index);
+                            window.parent.location.reload();
                         });
-                        var index = page.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        page.layer.close(index);
-                        window.parent.location.reload();
                     } else {
-                        layer.alert(resultData.message, {
-                            title: '提示'
-                        })
+                        page.layer.msg(resultData.message, {
+                            icon: 2,
+                            time: 2000
+                        }, function () {
+                            btn.attr("disabled", false);
+                        });
                     }
                 }
             });

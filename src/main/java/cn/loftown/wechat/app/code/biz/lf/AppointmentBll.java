@@ -14,12 +14,11 @@ import cn.loftown.wechat.app.code.dto.vo.OrderStatisticsVO;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentConfigModel;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentOrderHomeModel;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentOrderModel;
-import cn.loftown.wechat.app.code.enums.ConfigTimeTypeEnum;
-import cn.loftown.wechat.app.code.enums.OrderCancelTypeEnum;
-import cn.loftown.wechat.app.code.enums.OrderStatusEnum;
-import cn.loftown.wechat.app.code.enums.StatusEnum;
+import cn.loftown.wechat.app.code.entity.lf.CarTypeModel;
+import cn.loftown.wechat.app.code.enums.*;
 import cn.loftown.wechat.app.code.exception.PredictException;
 import cn.loftown.wechat.app.code.model.lf.GetAppointmentOrderRequest;
+import cn.loftown.wechat.app.code.model.lf.GetCarTypeRequest;
 import cn.loftown.wechat.app.code.util.DateTimeUtil;
 import cn.loftown.wechat.app.code.util.DescribeTextUtil;
 import cn.loftown.wechat.app.code.util.UsedNumberUtil;
@@ -45,6 +44,43 @@ public class AppointmentBll {
     AppointmentOrderDao appointmentOrderDao;
     @Autowired
     AppointmentConfigDao appointmentConfigDao;
+
+    /**
+     * 查询预约车型列表
+     * @param request
+     * @return
+     */
+    public TableResponse<CarTypeModel> getAppointmentCarType(GetCarTypeRequest request){
+        List<CarTypeDTO> carTypeDTOList = carTypeDao.getCarTypeByTypeId(request.getUniacid(), StatusEnum.ENABLES.getCode(), request.getCarTypeId());
+        TableResponse<CarTypeModel> response = new TableResponse<>();
+        List<CarTypeModel> carTypeModelList = new ArrayList<>();
+        if(carTypeDTOList != null && carTypeDTOList.size() > 0){
+            //实体转换
+            for (CarTypeDTO carTypeDTO : carTypeDTOList){
+                CarTypeModel carTypeModel = new CarTypeModel();
+                BeanUtils.copyProperties(carTypeDTO, carTypeModel);
+                carTypeModelList.add(carTypeModel);
+            }
+        }
+        response.setData(carTypeModelList);
+        return response;
+    }
+
+    public void modifyAppointmentCarType(CarTypeModel model){
+        CarTypeDTO carTypeDTO  = new CarTypeDTO();
+        BeanUtils.copyProperties(model, carTypeDTO);
+        carTypeDTO.setStatus(StatusEnum.ENABLES.getCode());
+        carTypeDTO.setCreateTime(new Date(System.currentTimeMillis()));
+        carTypeDTO.setUpdateTime(carTypeDTO.getCreateTime());
+        if(carTypeDTO.getParentAcid() == null){
+            carTypeDTO.setParentAcid(0);
+        }
+        if(StringUtils.isEmpty(carTypeDTO.getAcid())){
+            carTypeDao.insert(carTypeDTO);
+        } else {
+            carTypeDao.updateByPrimaryKey(carTypeDTO);
+        }
+    }
 
     /**
      * 后端查询预约订单

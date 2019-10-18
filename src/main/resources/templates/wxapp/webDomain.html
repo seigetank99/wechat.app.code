@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">request合法域名</label>
+            <label class="layui-form-label">request域名</label>
             <div class="layui-input-inline">
                 <input type="text" name="requestdomain" id="requestdomain" lay-verify="domain"
                        placeholder="请输入request合法域名"
@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">socket合法域名</label>
+            <label class="layui-form-label">socket域名</label>
             <div class="layui-input-inline">
                 <input type="text" name="wsrequestdomain" id="wsrequestdomain" lay-verify="domain"
                        placeholder="请输入socket合法域名"
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">uploadFile合法域名</label>
+            <label class="layui-form-label">上传域名</label>
             <div class="layui-input-inline">
                 <input type="text" name="uploaddomain" id="uploaddomain" lay-verify="domain"
                        placeholder="请输入uploadFile合法域名"
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">downloadFile合法域名</label>
+            <label class="layui-form-label">下载域名</label>
             <div class="layui-input-inline">
                 <input type="text" name="downloaddomain" id="downloaddomain" lay-verify="domain"
                        placeholder="请输入downloadFile合法域名"
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">业务合法域名</label>
+            <label class="layui-form-label">业务域名</label>
             <div class="layui-input-inline">
                 <input type="text" name="webviewdomain" id="webviewdomain" lay-verify="domain" placeholder="请输入业务合法域名"
                        autocomplete="off" class="layui-input">
@@ -66,14 +66,16 @@
 <script th:inline="javascript">
     layui.use(['form'], function () {
         //自定义验证规则
-        layui.form.verify({
-            domain: [
-                /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/
-                , '请输入正确的域名地址'
-            ]
-        });
+        // layui.form.verify({
+        //     domain: [
+        //         /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/
+        //         , '请输入正确的域名地址'
+        //     ]
+        // });
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
+            var btn = $(this);
+            btn.attr({"disabled":"disabled"});
             $.ajax({
                 url: '/wxapp/commitDomain',
                 dataType: 'json',
@@ -85,14 +87,18 @@
                         layer.msg('操作成功', {
                             icon: 1,
                             time: 2000
+                        }, function(){
+                            var index = page.layer.getFrameIndex(window.name);
+                            page.layer.close(index);
+                            window.parent.location.reload();
                         });
-                        var index = page.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        page.layer.close(index);
-                        window.parent.location.reload();
                     } else {
-                        layer.alert(resultData.message, {
-                            title: '提示'
-                        })
+                        page.layer.msg(resultData.message, {
+                            icon: 2,
+                            time: 2000
+                        }, function () {
+                            btn.attr("disabled", false);
+                        });
                     }
                 }
             });

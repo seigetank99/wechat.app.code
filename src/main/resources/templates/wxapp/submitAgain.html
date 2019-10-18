@@ -7,15 +7,17 @@
 </head>
 <body>
 <div class="layui-tab-content">
-    小程序名称：<label id="wxAppName"></label>
-    <input type="hidden" name="wxAppAcid" id="wxAppAcid">
-</div>
-<div class="layui-body layui-tab-content site-demo site-demo-body">
-    <form class="layui-form layui-form-pane" action="">
+    <form class="layui-form layui-form-pane" action="" lay-filter="commitCode">
+        <div class="layui-form-item">
+            <label class="layui-form-label">小程序名称</label>
+            <div class="layui-input-inline">
+                <input type="text" readonly="readonly" name="wxAppName" id="wxAppName" autocomplete="off" class="layui-input">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">反馈内容</label>
             <div class="layui-input-block">
-                <input type="text" name="title" autocomplete="off" lay-verify="required" placeholder="请输入反馈内容" class="layui-input">
+                <input type="text" name="feedbackInfo" autocomplete="off" lay-verify="required" placeholder="请输入反馈内容" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -28,6 +30,8 @@
                 </blockquote>
             </div>
         </div>
+        <button id="addDepartment" class="layui-btn" lay-filter="formVerify" lay-submit="" style="display: none">添加
+        </button>
     </form>
 </div>
 <script src="/layui/layui.js" charset="utf-8"></script>
@@ -36,33 +40,46 @@
     layui.use(['form'], function () {
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
+            var btn = $(this);
+            btn.attr({"disabled":"disabled"});
+            var submitData = data.field;
+            submitData.acid=[[${acid}]];
+            submitData.wxAppAcId = [[${wxApp.acid}]];
+            console.log(submitData);
             $.ajax({
                 url: '/wxapp/submitCode',
                 dataType: 'json',
                 contentType: "application/json",
                 type: 'post',
-                data: data.field,
+                data: JSON.stringify(submitData),
                 success: function (resultData) {
                     var page = parent;
                     if (resultData.code == 0) {
                         layer.msg('操作成功', {
                             icon: 1,
                             time: 2000
+                        }, function(){
+                            var index = page.layer.getFrameIndex(window.name);
+                            page.layer.close(index);
+                            window.parent.location.reload();
                         });
-                        var index = page.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        page.layer.close(index);
-                        window.parent.location.reload();
                     } else {
-                        submitCount = 0;
-                        layer.alert(resultData.message, {
-                            title: '错误提示'
-                        })
+                        console.log(111);
+                        page.layer.msg(resultData.message, {
+                            icon: 2,
+                            time: 2000
+                        }, function () {
+                            btn.attr("disabled", false);
+                        });
                     }
                 }
             });
 
             return false;
         });
+        layui.form.val('commitCode', {
+            "wxAppName": [[${wxApp.name}]]
+        })
     });
 </script>
 </body>

@@ -12,7 +12,7 @@ public interface CarTypeDao {
 
     CarTypeDTO selectByPrimaryKey(Integer acid);
 
-    List<CarTypeDTO> selectAll();
+    List<CarTypeDTO> getCarTypeByTypeId(@Param("uniacid") Integer uniacid, @Param("statusId") Integer statusId, @Param("typeId") Integer typeId);
 
     int getCarTypeCount(@Param("uniacid") Integer uniacid, @Param("statusId") Integer statusId, @Param("typeId") Integer typeId, @Param("name") String name);
 

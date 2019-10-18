@@ -3,13 +3,13 @@ package cn.loftown.wechat.app.code.controller.lf;
 import cn.loftown.wechat.app.code.base.BaseResponse;
 import cn.loftown.wechat.app.code.base.TableResponse;
 import cn.loftown.wechat.app.code.biz.lf.AppointmentBll;
-import cn.loftown.wechat.app.code.dto.vo.OrderStatisticsVO;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentConfigModel;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentOrderHomeModel;
 import cn.loftown.wechat.app.code.entity.lf.AppointmentOrderModel;
+import cn.loftown.wechat.app.code.entity.lf.CarTypeModel;
 import cn.loftown.wechat.app.code.model.lf.GetAppointmentOrderRequest;
+import cn.loftown.wechat.app.code.model.lf.GetCarTypeRequest;
 import cn.loftown.wechat.app.code.util.DescribeTextUtil;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,6 +54,11 @@ public class AppointmentController {
         }
     }
 
+    @RequestMapping(value = "/appointmentOrder/getCarType", method = RequestMethod.POST)
+    public TableResponse<CarTypeModel> getAppointmentCarType(GetCarTypeRequest request) {
+        return appointmentBll.getAppointmentCarType(request);
+    }
+
     @RequestMapping(value = "/appointmentOrder/get", method = RequestMethod.POST)
     public TableResponse<AppointmentOrderModel> getAppointmentOrder(GetAppointmentOrderRequest request) {
         return appointmentBll.getAppointmentOrder(request);
@@ -77,6 +82,16 @@ public class AppointmentController {
     public BaseResponse modifyAppointmentOrder(AppointmentOrderModel model) {
         try {
             appointmentBll.modifyAppointmentOrder(model);
+            return new BaseResponse();
+        } catch (Exception ex){
+            return new BaseResponse(DescribeTextUtil.SYSTEM_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/appointmentOrder/modifyCarType", method = RequestMethod.POST)
+    public BaseResponse modifyAppointmentModifyCarType(CarTypeModel model) {
+        try {
+            appointmentBll.modifyAppointmentCarType(model);
             return new BaseResponse();
         } catch (Exception ex){
             return new BaseResponse(DescribeTextUtil.SYSTEM_ERROR);

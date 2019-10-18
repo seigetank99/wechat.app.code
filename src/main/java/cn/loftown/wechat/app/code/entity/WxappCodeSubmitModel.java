@@ -1,7 +1,9 @@
 package cn.loftown.wechat.app.code.entity;
 
 import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 
@@ -69,5 +71,7 @@ public class WxappCodeSubmitModel {
     /**
      * 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Timestamp createTime;
 }

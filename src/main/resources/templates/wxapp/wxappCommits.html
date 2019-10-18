@@ -193,12 +193,14 @@
                 layer.open({
                     title: '重审小程序代码',
                     type: 2,
-                    content: '/wxapp/submitAgain?wxAppAcid=' + data.wxAppAcid + '&acid=' + data.acid,    // 设置跳转的url，跳转到对应的页面
-                    area: ['450px', '600px'],
-                    btn: ['添加', '取消'],
+                    content: '/wxapp/submitAgain?wxAppAcid=' + data.wxAppAcid + '&acid=' + data.acid,
+                    area: ['450px', '400px'],
+                    btn: ['提交', '取消'],
                     yes: function (index, layero) {
                         var formSubmit=layer.getChildFrame('form', index);
-                        formSubmit.find('button')[0].click();
+                        for(var i = formSubmit.find('button').length - 1; i>=0; i--){
+                            formSubmit.find('button')[i].click();
+                        }
                     }
                 });
             }

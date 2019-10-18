@@ -63,10 +63,14 @@
     from lf_4s_car_type
     where acid = #{acid,jdbcType=INTEGER}
   </select>
-    <select id="selectAll" resultMap="BaseResultMap">
+    <select id="getCarTypeByTypeId" resultMap="BaseResultMap">
     select acid, uniacid, `name`, imageUrl, `status`, typeId, orderId, proposedPrice,
     parentAcid, updateTime, `createUser`, createTime
-    from lf_4s_car_type
+    from lf_4s_car_type where uniacid = #{uniacid} and status = #{statusId}
+        <if test="typeId != null">
+            and typeId = #{typeId}
+        </if>
+    order by orderId desc
   </select>
     <select id="getCarTypeCount" resultType="java.lang.Integer">
         select count(1)

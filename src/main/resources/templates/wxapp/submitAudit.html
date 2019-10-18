@@ -138,10 +138,11 @@
         });
         //监听提交
         layui.form.on('submit(formVerify)', function (data) {
+            var btn = $(this);
+            btn.attr({"disabled":"disabled"});
             submitData.push(data.field);
             if(++submitCount == addCount - 1){
-                var da = {acid:[[${acid}]], wxAppAcId:[[${wxApp.acid}]], wxAppName:[[${wxApp.name}]], submitDataList: submitData};
-                console.log(JSON.stringify(da));
+                var da = { acid:[[${acid}]], wxAppAcId:[[${wxApp.acid}]], wxAppName:[[${wxApp.name}]], submitDataList: submitData };
                 $.ajax({
                     url: '/wxapp/submitCode',
                     dataType: 'json',
@@ -151,18 +152,22 @@
                     success: function (resultData) {
                         var page = parent;
                         if (resultData.code == 0) {
-                            layer.msg('操作成功', {
+                            page.layer.msg('操作成功', {
                                 icon: 1,
                                 time: 2000
+                            }, function(){
+                                var index = page.layer.getFrameIndex(window.name);
+                                page.layer.close(index);
+                                window.parent.location.reload();
                             });
-                            var index = page.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            page.layer.close(index);
-                            window.parent.location.reload();
                         } else {
                             submitCount = 0;
-                            layer.alert(resultData.message, {
-                                title: '错误提示'
-                            })
+                            page.layer.msg(resultData.message, {
+                                icon: 2,
+                                time: 2000
+                            }, function () {
+                                btn.attr("disabled", false);
+                            });
                         }
                     }
                 });
@@ -180,12 +185,10 @@
         var showSecondCategory = false;
         $.each(selectData, function (index, item) {
             if (item.parentId == dataValue) {
-                if (showSecondCategory == false) {
                     $("#secondCategoryName").val(item.value);
                     onLoadThirdCategory(form, item.id);
-                }
                 showSecondCategory = true;
-                $('#secondCategory').html(new Option(item.value, item.id));// 下拉菜单里添加元素
+                $('#secondCategory').append(new Option(item.value, item.id));// 下拉菜单里添加元素
             }
         });
         if (showSecondCategory) {
@@ -198,11 +201,9 @@
         var showThirdCategory = false;
         $.each(selectData, function (index, item) {
             if (item.parentId == dataValue) {
-                if (showThirdCategory == false) {
-                    $("#thirdCategoryName").val(item.value);
-                }
+                $("#thirdCategoryName").val(item.value);
                 showThirdCategory = true;
-                $('#thirdCategory').html(new Option(item.value, item.id));// 下拉菜单里添加元素
+                $('#thirdCategory').append(new Option(item.value, item.id));// 下拉菜单里添加元素
             }
         });
         if (showThirdCategory) {

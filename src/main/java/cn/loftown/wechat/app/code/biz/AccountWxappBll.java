@@ -255,7 +255,8 @@ public class AccountWxappBll {
      */
     public BaseResponse submitCode(SubmitCodeRequest submitModel) throws Exception {
         WxAppCodeSubmitDTO wxAppCodeSubmitDTO = wxappCodeSubmitDao.selectByPrimaryKey(submitModel.getAcid());
-        if(wxAppCodeSubmitDTO == null || wxAppCodeSubmitDTO.getStatus() != WxAppCodeStatusEnum.TEMPLATE.getCode()){
+        if(wxAppCodeSubmitDTO == null || (wxAppCodeSubmitDTO.getStatus() != WxAppCodeStatusEnum.TEMPLATE.getCode() &&
+                wxAppCodeSubmitDTO.getStatus() != WxAppCodeStatusEnum.FEEDBACK.getCode())){
             return new BaseResponse("操作失败，请刷新后重试");
         }
         AccountWxappDTO wxappDTO = accountWxappDao.getModelById(submitModel.getWxAppAcId());
@@ -263,30 +264,36 @@ public class AccountWxappBll {
             return new BaseResponse("操作失败，请刷新后重试");
         }
         if(submitModel.getSubmitDataList() == null || submitModel.getSubmitDataList().size() == 0){
-            return new BaseResponse("请检查填写数据");
-        }
-        JSONArray jsonArray = new JSONArray();
-        for (SubmitCodeModel submitCodeModel : submitModel.getSubmitDataList()){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("address", submitCodeModel.getPage());
-            jsonObject.put("tag", submitCodeModel.getTag());
-            jsonObject.put("first_class", submitCodeModel.getFirstCategoryName());
-            jsonObject.put("second_class", submitCodeModel.getSecondCategoryName());
-            jsonObject.put("first_id",submitCodeModel.getFirstCategory());
-            jsonObject.put("second_id", submitCodeModel.getSecondCategory());
-            jsonObject.put("title", submitCodeModel.getTitle());
-            if(!StringUtils.isEmpty(submitCodeModel.getThirdCategory())){
-                jsonObject.put("third_class", submitCodeModel.getThirdCategoryName());
-                jsonObject.put("third_id", submitCodeModel.getThirdCategory());
+            //重新提交不需要这部分信息，直接取库
+            if(StringUtils.isEmpty(submitModel.getFeedbackInfo())){
+                return new BaseResponse("请检查填写数据");
             }
-            jsonArray.add(jsonObject);
         }
         JSONObject request = new JSONObject();
-        if(!StringUtils.isEmpty(submitModel.getFeedbackInfo())) {
+        JSONArray jsonArray = new JSONArray();
+        if(StringUtils.isEmpty(submitModel.getFeedbackInfo())) {
+            for (SubmitCodeModel submitCodeModel : submitModel.getSubmitDataList()) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("address", submitCodeModel.getPage());
+                jsonObject.put("tag", submitCodeModel.getTag());
+                jsonObject.put("first_class", submitCodeModel.getFirstCategoryName());
+                jsonObject.put("second_class", submitCodeModel.getSecondCategoryName());
+                jsonObject.put("first_id", submitCodeModel.getFirstCategory());
+                jsonObject.put("second_id", submitCodeModel.getSecondCategory());
+                jsonObject.put("title", submitCodeModel.getTitle());
+                if (!StringUtils.isEmpty(submitCodeModel.getThirdCategory())) {
+                    jsonObject.put("third_class", submitCodeModel.getThirdCategoryName());
+                    jsonObject.put("third_id", submitCodeModel.getThirdCategory());
+                }
+                jsonArray.add(jsonObject);
+            }
+            request.put("item_list", jsonArray);
+        } else {
+            request.put("item_list", JSONArray.parseArray(wxAppCodeSubmitDTO.getItemList()));
             request.put("feedback_info", submitModel.getFeedbackInfo());
             request.put("feedback_stuff", submitModel.getFeedbackStuff());
         }
-        request.put("item_list", jsonArray);
+
         String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(submitModel.getWxAppAcId(), AppTypeEnum.WECHATMINIAPP);
         String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/submit_audit?access_token=" + authorizerAccessToken, request.toJSONString());
         JSONObject jsonObject = JSONObject.parseObject(response);
