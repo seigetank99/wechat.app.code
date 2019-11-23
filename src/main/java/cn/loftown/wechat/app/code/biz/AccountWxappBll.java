@@ -70,27 +70,52 @@ public class AccountWxappBll {
      * @throws Exception
      */
     public BaseResponse setWxAppDomain(CommitDomainModel model) throws Exception {
+        CommitDomainModel commitDomainModel = getWxAppDomain(model.getAcid());
+        if(commitDomainModel == null){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
         JSONObject request = new JSONObject();
-        request.put("action", model.getAction());
-        request.put("requestdomain", model.getRequestdomain().split(";"));
-        request.put("wsrequestdomain", model.getWsrequestdomain().split(";"));
-        request.put("uploaddomain", model.getUploaddomain().split(";"));
-        request.put("downloaddomain", model.getDownloaddomain().split(";"));
+        request.put("action", model.getRequestAction());
+        boolean isUpdate = false;
+        if(!model.getRequestdomain().trim().equals(commitDomainModel.getRequestdomain().trim())) {
+            request.put("requestdomain", model.getRequestdomain().split(";"));
+            isUpdate = true;
+        }
+        if(!model.getWsrequestdomain().trim().equals(commitDomainModel.getWsrequestdomain().trim())) {
+            request.put("wsrequestdomain", model.getWsrequestdomain().split(";"));
+            isUpdate = true;
+        }
+        if(!model.getUploaddomain().trim().equals(commitDomainModel.getUploaddomain().trim())) {
+            request.put("uploaddomain", model.getUploaddomain().split(";"));
+            isUpdate = true;
+        }
+        if(!model.getDownloaddomain().trim().equals(commitDomainModel.getDownloaddomain().trim())) {
+            request.put("downloaddomain", model.getDownloaddomain().split(";"));
+            isUpdate = true;
+        }
         String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(model.getAcid(), AppTypeEnum.WECHATMINIAPP);
-        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/modify_domain?access_token=" + authorizerAccessToken, request.toJSONString());
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        BaseResponse result = BaseResponse.getInstance(jsonObject);
-
-        if(result.getCode() != BaseResponse.ok()){
+        if(isUpdate) {
+            String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/modify_domain?access_token=" + authorizerAccessToken, request.toJSONString());
+            JSONObject jsonObject = JSONObject.parseObject(response);
+            BaseResponse result = BaseResponse.getInstance(jsonObject);
+            if (result.getCode() != BaseResponse.ok()) {
+                return result;
+            }
+        }
+        isUpdate = false;
+        request = new JSONObject();
+        request.put("action", model.getWebAction());
+        if(!model.getWebviewdomain().trim().equals(commitDomainModel.getWebviewdomain().trim())) {
+            request.put("webviewdomain", model.getWebviewdomain().split(";"));
+            isUpdate = true;
+        }
+        if(isUpdate) {
+            String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
+            JSONObject jsonObject = JSONObject.parseObject(response);
+            BaseResponse result = BaseResponse.getInstance(jsonObject);
             return result;
         }
-        request = new JSONObject();
-        request.put("action", model.getAction());
-        request.put("webviewdomain", model.getWebviewdomain().split(";"));
-        response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
-        jsonObject = JSONObject.parseObject(response);
-        result = BaseResponse.getInstance(jsonObject);
-        return result;
+        return new BaseResponse();
     }
 
     /**
@@ -106,7 +131,7 @@ public class AccountWxappBll {
         }
         CommitDomainModel result = new CommitDomainModel();
         result.setAcid(accountWxappDTO.getAcid());
-        result.setName(accountWxappDTO.getName());
+        result.setWxAppName(accountWxappDTO.getName());
 
         JSONObject request = new JSONObject();
         request.put("action", "get");
@@ -116,26 +141,66 @@ public class AccountWxappBll {
         if(jsonObject.getInteger("errcode") == BaseResponse.ok()){
             String requestdomain = getWxAppResultUrl(jsonObject.getString("requestdomain"));
             if(StringUtils.isEmpty(requestdomain)){
-                result.setAction("add");
+                result.setRequestAction("add");
             } else {
-                result.setAction("set");
+                result.setRequestAction("set");
             }
             result.setRequestdomain(requestdomain);
             result.setWsrequestdomain(getWxAppResultUrl(jsonObject.getString("wsrequestdomain")));
             result.setUploaddomain(getWxAppResultUrl(jsonObject.getString("uploaddomain")));
             result.setDownloaddomain(getWxAppResultUrl(jsonObject.getString("downloaddomain")));
 
-            response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
-            jsonObject = JSONObject.parseObject(response);
-            if(jsonObject.getInteger("errcode") == BaseResponse.ok()){
-                String webviewdomain = getWxAppResultUrl(jsonObject.getString("webviewdomain"));
-                if(StringUtils.isEmpty(webviewdomain)){
-                    result.setWebAction("add");
-                } else {
-                    result.setWebAction("set");
-                }
-                result.setWebviewdomain(webviewdomain);
+            CommitDomainModel serviceDomain = getWxAppWebDomain(accountWxappDTO);
+            if(serviceDomain != null){
+                result.setWebAction(serviceDomain.getWebAction());
+                result.setWebviewdomain(serviceDomain.getWebviewdomain());
             }
+        }
+        return result;
+    }
+
+    /**
+     * 查询小程序业务域名域名
+     * @param wxappAcid
+     * @return
+     * @throws Exception
+     */
+    public CommitDomainModel getWxAppWebDomain(Integer wxappAcid) {
+        try {
+            AccountWxappDTO accountWxappDTO = accountWxappDao.getModelById(wxappAcid);
+            if (accountWxappDTO == null) {
+
+            }
+            return getWxAppWebDomain(accountWxappDTO);
+        } catch (Exception ex){
+            return null;
+        }
+    }
+
+    /**
+     * 查询小程序业务域名域名
+     * @param accountWxappDTO
+     * @return
+     * @throws Exception
+     */
+    public CommitDomainModel getWxAppWebDomain(AccountWxappDTO accountWxappDTO) throws Exception {
+        CommitDomainModel result = new CommitDomainModel();
+        result.setAcid(accountWxappDTO.getAcid());
+        result.setWxAppName(accountWxappDTO.getName());
+
+        JSONObject request = new JSONObject();
+        request.put("action", "get");
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(accountWxappDTO.getAcid(), AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if(jsonObject.getInteger("errcode") == BaseResponse.ok()){
+            String webviewdomain = getWxAppResultUrl(jsonObject.getString("webviewdomain"));
+            if(StringUtils.isEmpty(webviewdomain)){
+                result.setWebAction("add");
+            } else {
+                result.setWebAction("set");
+            }
+            result.setWebviewdomain(webviewdomain);
         }
         return result;
     }
@@ -324,6 +389,20 @@ public class AccountWxappBll {
         if(wxappDTO == null){
             return new BaseResponse("小程序不存在");
         }
+        CommitDomainModel commitDomainModel = getWxAppWebDomain(commitModel.getWxAppAcid());
+        if(commitDomainModel == null || StringUtils.isEmpty(commitDomainModel.getWebviewdomain())){
+            return new BaseResponse("请先设置小程序业务域名");
+        }
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(WxAppCodeStatusEnum.TEMPLATE.getCode());
+        statusList.add(WxAppCodeStatusEnum.SUBMIT.getCode());
+        statusList.add(WxAppCodeStatusEnum.FEEDBACK.getCode());
+        statusList.add(WxAppCodeStatusEnum.AUDIT.getCode());
+        int wxAppCodeCount = wxappCodeSubmitDao.selectByWxAppCount(commitModel.getWxAppAcid(), statusList, null, null);
+        if(wxAppCodeCount > 0){
+            return new BaseResponse("存在未完成的代码，请先禁用");
+        }
+
         //先保存DB
         int acId = saveCommitCode(commitModel);
         //再调用微信接口
@@ -422,6 +501,7 @@ public class AccountWxappBll {
             updateDTO.setStatus(WxAppCodeStatusEnum.RELEASE.getCode());
             updateDTO.setReleaseUser(1);
             updateDTO.setReleaseTime(new Timestamp(System.currentTimeMillis()));
+            wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
         }
         return result;
     }
@@ -448,6 +528,7 @@ public class AccountWxappBll {
             updateDTO.setStatus(WxAppCodeStatusEnum.REVERT.getCode());
             updateDTO.setRevertUser(1);
             updateDTO.setRevertTime(new Timestamp(System.currentTimeMillis()));
+            wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
         }
         return result;
     }
@@ -480,6 +561,7 @@ public class AccountWxappBll {
             updateDTO.setStatus(isVisible ? WxAppCodeStatusEnum.RELEASE.getCode() : WxAppCodeStatusEnum.INVISIBLE.getCode());
             updateDTO.setRevertUser(1);
             updateDTO.setRevertTime(new Timestamp(System.currentTimeMillis()));
+            wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
         }
         return result;
     }

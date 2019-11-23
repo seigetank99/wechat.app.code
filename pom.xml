@@ -65,6 +65,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- redis依赖包 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -96,6 +101,12 @@
 			<groupId>com.github.junrar</groupId>
 			<artifactId>junrar</artifactId>
 			<version>0.7</version>
+		</dependency>
+		<!--反序列化 php-->
+		<dependency>
+			<groupId>org.sction</groupId>
+			<artifactId>phprpc</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 	</dependencies>
 

@@ -11,10 +11,10 @@
         <div class="layui-form-item">
             <label class="layui-form-label">小程序名称</label>
             <div class="layui-input-inline">
-                <input type="text" readonly="readonly" name="txtWxAppName" id="txtWxAppName" autocomplete="off"
+                <input type="text" readonly="readonly" name="wxAppName" id="wxAppName" autocomplete="off"
                        class="layui-input">
                 <input type="hidden" name="acid" id="acid">
-                <input type="hidden" name="action" id="action">
+                <input type="hidden" name="requestAction" id="requestAction">
                 <input type="hidden" name="webAction" id="webAction">
             </div>
         </div>
@@ -76,12 +76,15 @@
         layui.form.on('submit(formVerify)', function (data) {
             var btn = $(this);
             btn.attr({"disabled":"disabled"});
+            data.field.acid = parseInt(data.field.acid);
+            console.log(data.field);
             $.ajax({
                 url: '/wxapp/commitDomain',
                 dataType: 'json',
                 type: 'post',
                 data: data.field,
                 success: function (resultData) {
+                    console.log(resultData);
                     var page = parent;
                     if (resultData.code == 0) {
                         layer.msg('操作成功', {
@@ -102,17 +105,18 @@
                     }
                 }
             });
+            console.log(111);
             return false;
         });
         layui.form.val('commitDomain', {
-            "txtWxAppName": [[${commitDomainModel.name}]] // "name": "value"
+            "wxAppName": [[${commitDomainModel.wxAppName}]] // "name": "value"
             , "acid": [[${commitDomainModel.acid}]]
             , "requestdomain": [[${commitDomainModel.requestdomain}]]
             , "wsrequestdomain": [[${commitDomainModel.wsrequestdomain}]]
             , "uploaddomain": [[${commitDomainModel.uploaddomain}]]
             , "downloaddomain": [[${commitDomainModel.downloaddomain}]]
             , "webviewdomain": [[${commitDomainModel.webviewdomain}]]
-            , "action": [[${commitDomainModel.action}]]
+            , "requestAction": [[${commitDomainModel.requestAction}]]
             , "webAction": [[${commitDomainModel.webAction}]]
         })
     });

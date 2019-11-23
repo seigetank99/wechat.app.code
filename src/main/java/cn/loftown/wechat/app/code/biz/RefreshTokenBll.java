@@ -87,24 +87,25 @@ public class RefreshTokenBll {
     public String getAuthorizerAccessToken(int acid, AppTypeEnum appType) throws Exception{
         String authorizerAppID = "";
         String authorizerRefreshToken = "";
+        String authorizerAccessKey = "";
 
         //根据类型查询下认证实体的authorizerAppID和authorizerRefreshToken
         if(AppTypeEnum.WECHATSERVICE.equals(appType)){
             AccountWechatDTO accountWechatDTO = accountWechatDao.getModelById(acid);
             authorizerAppID = accountWechatDTO.getKey();
             authorizerRefreshToken = accountWechatDTO.getAuth_refresh_token();
+            authorizerAccessKey = "account:auth:accesstoken:"+ authorizerAppID;
         } else if(AppTypeEnum.WECHATMINIAPP.equals(appType)){
             AccountWxappDTO accountWxappDTO = accountWxappDao.getModelById(acid);
             authorizerAppID = accountWxappDTO.getKey();
             authorizerRefreshToken = accountWxappDTO.getAuth_refresh_token();
+            authorizerAccessKey = "accesstoken:"+ authorizerAppID;
         }
 
         //有为空说明数据异常，记录日志返回
-        if(StringUtils.isEmpty(authorizerAppID) || StringUtils.isEmpty(authorizerRefreshToken)){
+        if(StringUtils.isEmpty(authorizerAppID) || StringUtils.isEmpty(authorizerRefreshToken) || StringUtils.isEmpty(authorizerAccessKey)){
             return null;
         }
-
-        String authorizerAccessKey = "account:auth:accesstoken:"+ authorizerAppID;
 
         //先去数据库查询下是否有AccessToken，有了的话验证下是否过期。未过期直接返回，已过期从新获取
         CoreCacheDTO authorCacheDTO = coreCacheDao.getCacheValue(authorizerAccessKey);

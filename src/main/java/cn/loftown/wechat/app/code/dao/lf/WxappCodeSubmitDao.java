@@ -15,11 +15,10 @@ public interface WxappCodeSubmitDao {
 
     WxAppCodeSubmitDTO selectByPrimaryKey(Integer acid);
 
-    List<WxAppCodeSubmitDTO> selectByWxApp(@Param("wxAppAcId")Integer wxAppAcId, @Param("status")Integer status,
+    List<WxAppCodeSubmitDTO> selectByWxApp(@Param("wxAppAcId")Integer wxAppAcId, @Param("statusList")List<Integer> statusList,
                                            @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
-    int selectByWxAppCount(@Param("wxAppAcId")Integer wxAppAcId, @Param("status")Integer status,
+    int selectByWxAppCount(@Param("wxAppAcId")Integer wxAppAcId, @Param("statusList")List<Integer> statusList,
                                            @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
-
 
     int updateByPrimaryKey(WxAppCodeSubmitDTO record);
 }

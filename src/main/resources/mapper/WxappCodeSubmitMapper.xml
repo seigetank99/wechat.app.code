@@ -198,8 +198,11 @@
         <if test="wxAppAcId != null">
             AND wxapp_acid = #{wxAppAcId}
         </if>
-        <if test="status != null">
-            AND status = #{status}
+        <if test="statusList != null and statusList.size() > 0">
+            AND status IN
+            <foreach collection="statusList" index="index" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
         </if>
     </select>
     <select id="selectByWxAppCount" resultType="int">
@@ -217,8 +220,11 @@
         <if test="wxAppAcId != null">
             AND wxapp_acid = #{wxAppAcId}
         </if>
-        <if test="status != null">
-            AND status = #{status}
+        <if test="statusList != null and statusList.size() > 0">
+            AND status IN
+            <foreach collection="statusList" index="index" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
         </if>
     </select>
 </mapper>
