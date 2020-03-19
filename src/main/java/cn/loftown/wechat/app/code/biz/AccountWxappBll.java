@@ -2,19 +2,20 @@ package cn.loftown.wechat.app.code.biz;
 
 import cn.loftown.wechat.app.code.base.BaseResponse;
 import cn.loftown.wechat.app.code.dao.AccountWxappDao;
+import cn.loftown.wechat.app.code.dao.ShopSyssetDao;
+import cn.loftown.wechat.app.code.dao.lf.WxappBindTesterDao;
 import cn.loftown.wechat.app.code.dao.lf.WxappCodeSubmitDao;
 import cn.loftown.wechat.app.code.dto.AccountWxappDTO;
 import cn.loftown.wechat.app.code.dto.lf.WxAppCodeSubmitDTO;
-import cn.loftown.wechat.app.code.entity.AccountWxappModel;
-import cn.loftown.wechat.app.code.entity.ComponentModel;
-import cn.loftown.wechat.app.code.entity.SubmitCodeModel;
-import cn.loftown.wechat.app.code.entity.WxappCodeSubmitModel;
+import cn.loftown.wechat.app.code.dto.lf.WxappBindTesterDTO;
+import cn.loftown.wechat.app.code.entity.*;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
+import cn.loftown.wechat.app.code.enums.StatusEnum;
 import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
-import cn.loftown.wechat.app.code.entity.CommitDomainModel;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import cn.loftown.wechat.app.code.util.HttpUtil;
+import cn.loftown.wechat.app.code.util.PHPTransformUtil;
 import cn.loftown.wechat.app.code.util.WeChatResultUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -35,6 +37,10 @@ public class AccountWxappBll {
     AccountWxappDao accountWxappDao;
     @Autowired
     WxappCodeSubmitDao wxappCodeSubmitDao;
+    @Autowired
+    ShopSyssetDao shopSyssetDao;
+    @Autowired
+    WxappBindTesterDao wxappBindTesterDao;
     @Autowired
     RefreshTokenBll refreshTokenBll;
     @Autowired
@@ -46,15 +52,9 @@ public class AccountWxappBll {
      * @return
      */
     public List<AccountWxappModel> getAccountWxAppByPage(int pageIndex){
-//        WxAppCodeSubmitDTO updateDTO = new WxAppCodeSubmitDTO();
-//        updateDTO.setAcid(1);
-//        updateDTO.setWxCommitCode("0");
-//        updateDTO.setWxCommitMsg("ok");
-//        wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
-
         List<AccountWxappModel> wechatModelList = new ArrayList<>();
         int pageStart = (pageIndex - 1) * 20;
-        List<AccountWxappDTO> wechatDTOList = accountWxappDao.getModelByPage(pageStart);
+        List<AccountWxappDTO> wechatDTOList = accountWxappDao.getModelByPage(StatusEnum.ENABLES.getCode(), pageStart);
         if(wechatDTOList != null && wechatDTOList.size() > 0){
             for (AccountWxappDTO wxappDTO : wechatDTOList){
                 wechatModelList.add(getAccountWxAppDetail(wxappDTO));
@@ -71,30 +71,25 @@ public class AccountWxappBll {
      */
     public BaseResponse setWxAppDomain(CommitDomainModel model) throws Exception {
         CommitDomainModel commitDomainModel = getWxAppDomain(model.getAcid());
-        if(commitDomainModel == null){
+        if (commitDomainModel == null) {
             return new BaseResponse("操作失败，请刷新后重试");
         }
-        JSONObject request = new JSONObject();
-        request.put("action", model.getRequestAction());
-        boolean isUpdate = false;
-        if(!model.getRequestdomain().trim().equals(commitDomainModel.getRequestdomain().trim())) {
-            request.put("requestdomain", model.getRequestdomain().split(";"));
-            isUpdate = true;
+        //有更改再调用微信的更新接口
+        boolean isDomainUpdate = false;
+        if (!model.getRequestdomain().trim().equals(commitDomainModel.getRequestdomain().trim()) ||
+                !model.getWsrequestdomain().trim().equals(commitDomainModel.getWsrequestdomain().trim()) ||
+                !model.getUploaddomain().trim().equals(commitDomainModel.getUploaddomain().trim()) ||
+                !model.getDownloaddomain().trim().equals(commitDomainModel.getDownloaddomain().trim())) {
+            isDomainUpdate = true;
         }
-        if(!model.getWsrequestdomain().trim().equals(commitDomainModel.getWsrequestdomain().trim())) {
-            request.put("wsrequestdomain", model.getWsrequestdomain().split(";"));
-            isUpdate = true;
-        }
-        if(!model.getUploaddomain().trim().equals(commitDomainModel.getUploaddomain().trim())) {
-            request.put("uploaddomain", model.getUploaddomain().split(";"));
-            isUpdate = true;
-        }
-        if(!model.getDownloaddomain().trim().equals(commitDomainModel.getDownloaddomain().trim())) {
-            request.put("downloaddomain", model.getDownloaddomain().split(";"));
-            isUpdate = true;
-        }
-        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(model.getAcid(), AppTypeEnum.WECHATMINIAPP);
-        if(isUpdate) {
+        if(isDomainUpdate) {
+            JSONObject request = new JSONObject();
+            request.put("action", model.getRequestAction());
+            request.put("requestdomain", Arrays.asList(model.getRequestdomain().split(";")));
+            request.put("wsrequestdomain", Arrays.asList(model.getWsrequestdomain().split(";")));
+            request.put("uploaddomain", Arrays.asList(model.getUploaddomain().split(";")));
+            request.put("downloaddomain", Arrays.asList(model.getDownloaddomain().split(";")));
+            String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(model.getAcid(), AppTypeEnum.WECHATMINIAPP);
             String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/modify_domain?access_token=" + authorizerAccessToken, request.toJSONString());
             JSONObject jsonObject = JSONObject.parseObject(response);
             BaseResponse result = BaseResponse.getInstance(jsonObject);
@@ -102,15 +97,17 @@ public class AccountWxappBll {
                 return result;
             }
         }
-        isUpdate = false;
-        request = new JSONObject();
-        request.put("action", model.getWebAction());
-        if(!model.getWebviewdomain().trim().equals(commitDomainModel.getWebviewdomain().trim())) {
-            request.put("webviewdomain", model.getWebviewdomain().split(";"));
+        //有更改再调用微信的更新接口
+        boolean isUpdate = false;
+        JSONObject webViewRequest = new JSONObject();
+        webViewRequest.put("action", model.getWebAction());
+        if (!model.getWebviewdomain().trim().equals(commitDomainModel.getWebviewdomain().trim())) {
+            webViewRequest.put("webviewdomain", Arrays.asList(model.getWebviewdomain().split(";")));
             isUpdate = true;
         }
-        if(isUpdate) {
-            String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, request.toJSONString());
+        if (isUpdate) {
+            String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(model.getAcid(), AppTypeEnum.WECHATMINIAPP);
+            String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/setwebviewdomain?access_token=" + authorizerAccessToken, webViewRequest.toJSONString());
             JSONObject jsonObject = JSONObject.parseObject(response);
             BaseResponse result = BaseResponse.getInstance(jsonObject);
             return result;
@@ -221,9 +218,19 @@ public class AccountWxappBll {
      * 查询正在发布的代码列表
      * @return
      */
-    public List<WxappCodeSubmitModel> getWxAppCode(){
+    public List<WxappCodeSubmitModel> getWxAppCode(Integer wxAppId, Integer statusId){
         List<WxappCodeSubmitModel> codeSubmitModelList = new ArrayList<>();
-        List<WxAppCodeSubmitDTO> codeSubmitList = wxappCodeSubmitDao.selectByWxApp(null,null,null,null);
+        List<Integer> statusList = null;
+        if(statusId != null) {
+            statusList = Arrays.asList(statusId);
+        } else {
+            statusList = Arrays.asList(
+                    WxAppCodeStatusEnum.TEMPLATE.getCode(),
+                    WxAppCodeStatusEnum.SUBMIT.getCode(),
+                    WxAppCodeStatusEnum.FEEDBACK.getCode(),
+                    WxAppCodeStatusEnum.AUDIT.getCode());
+        }
+        List<WxAppCodeSubmitDTO> codeSubmitList = wxappCodeSubmitDao.selectByWxApp(wxAppId, statusList,null,null);
         for (WxAppCodeSubmitDTO submitDTO : codeSubmitList){
             WxappCodeSubmitModel submitModel = new WxappCodeSubmitModel();
             BeanUtils.copyProperties(submitDTO, submitModel);
@@ -285,11 +292,27 @@ public class AccountWxappBll {
         wxappDTO.setAcid(wxappModel.getAcid());
         wxappDTO.setPrincipal_name(wxappModel.getPrincipalName());
         wxappDTO.setHead_img(wxappModel.getHeadImg());
+        wxappDTO.setName(wxappModel.getName());
         accountWxappDao.updateInfo(wxappDTO);
     }
 
     /**
-     * 去微信查询公众号的扩展信息
+     * 刷新小程序基础信息
+     * @param acid
+     */
+    public BaseResponse refreshInfo(int acid){
+        AccountWxappDTO wxappDTO = accountWxappDao.getModelById(acid);
+        if(wxappDTO == null){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
+        AccountWxappModel wxappModel = getAccountWxAppDetail(wxappDTO);
+        completionAccountWxAppDetail(wxappModel);
+        updateAccountWxApp(wxappModel);
+        return new BaseResponse();
+    }
+
+    /**
+     * 去微信查询小程序的扩展信息
      * @param accountWxappModel
      */
     private void completionAccountWxAppDetail(AccountWxappModel accountWxappModel){
@@ -307,6 +330,7 @@ public class AccountWxappBll {
             JSONObject responseJson = JSONObject.parseObject(response);
             accountWxappModel.setHeadImg(responseJson.getJSONObject("authorizer_info").getString("head_img"));
             accountWxappModel.setPrincipalName(responseJson.getJSONObject("authorizer_info").getString("principal_name"));
+            accountWxappModel.setName(responseJson.getJSONObject("authorizer_info").getString("nick_name"));
         } catch (Exception ex){
 
         }
@@ -330,31 +354,39 @@ public class AccountWxappBll {
         }
         if(submitModel.getSubmitDataList() == null || submitModel.getSubmitDataList().size() == 0){
             //重新提交不需要这部分信息，直接取库
-            if(StringUtils.isEmpty(submitModel.getFeedbackInfo())){
+            if(StringUtils.isEmpty(submitModel.getFeedbackInfo()) && submitModel.getJsonArray() == null){
                 return new BaseResponse("请检查填写数据");
             }
         }
         JSONObject request = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray = null;
+        //如果不是被驳回了重新提交，就要组织参数
         if(StringUtils.isEmpty(submitModel.getFeedbackInfo())) {
-            for (SubmitCodeModel submitCodeModel : submitModel.getSubmitDataList()) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("address", submitCodeModel.getPage());
-                jsonObject.put("tag", submitCodeModel.getTag());
-                jsonObject.put("first_class", submitCodeModel.getFirstCategoryName());
-                jsonObject.put("second_class", submitCodeModel.getSecondCategoryName());
-                jsonObject.put("first_id", submitCodeModel.getFirstCategory());
-                jsonObject.put("second_id", submitCodeModel.getSecondCategory());
-                jsonObject.put("title", submitCodeModel.getTitle());
-                if (!StringUtils.isEmpty(submitCodeModel.getThirdCategory())) {
-                    jsonObject.put("third_class", submitCodeModel.getThirdCategoryName());
-                    jsonObject.put("third_id", submitCodeModel.getThirdCategory());
+            //如果页面参数传递过来了，就不循环组织参数了
+            if(submitModel.getJsonArray() != null){
+                jsonArray = submitModel.getJsonArray();
+            } else {
+                jsonArray = new JSONArray();
+                for (SubmitCodeModel submitCodeModel : submitModel.getSubmitDataList()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("address", submitCodeModel.getPage());
+                    jsonObject.put("tag", submitCodeModel.getTag());
+                    jsonObject.put("first_class", submitCodeModel.getFirstCategoryName());
+                    jsonObject.put("second_class", submitCodeModel.getSecondCategoryName());
+                    jsonObject.put("first_id", submitCodeModel.getFirstCategory());
+                    jsonObject.put("second_id", submitCodeModel.getSecondCategory());
+                    jsonObject.put("title", submitCodeModel.getTitle());
+                    if (!StringUtils.isEmpty(submitCodeModel.getThirdCategory())) {
+                        jsonObject.put("third_class", submitCodeModel.getThirdCategoryName());
+                        jsonObject.put("third_id", submitCodeModel.getThirdCategory());
+                    }
+                    jsonArray.add(jsonObject);
                 }
-                jsonArray.add(jsonObject);
             }
             request.put("item_list", jsonArray);
         } else {
-            request.put("item_list", JSONArray.parseArray(wxAppCodeSubmitDTO.getItemList()));
+            jsonArray = JSONArray.parseArray(wxAppCodeSubmitDTO.getItemList());
+            request.put("item_list", jsonArray);
             request.put("feedback_info", submitModel.getFeedbackInfo());
             request.put("feedback_stuff", submitModel.getFeedbackStuff());
         }
@@ -380,11 +412,70 @@ public class AccountWxappBll {
     }
 
     /**
+     * 修改小程序底部菜单后重新审核
+     * @param uniacid
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse setWxAppTabBar(Integer uniacid) throws Exception{
+        AccountWxappDTO wxappDTO = accountWxappDao.getModelByUniAcid(uniacid);
+        if(wxappDTO == null){
+            return new BaseResponse("小程序不存在");
+        }
+
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(WxAppCodeStatusEnum.TEMPLATE.getCode());
+        statusList.add(WxAppCodeStatusEnum.SUBMIT.getCode());
+        statusList.add(WxAppCodeStatusEnum.FEEDBACK.getCode());
+        int wxAppCodeCount = wxappCodeSubmitDao.selectByWxAppCount(wxappDTO.getAcid(), statusList, null, null);
+        if(wxAppCodeCount > 0){
+            return new BaseResponse("小程序正在审核中，请等待审核通过后再提交");
+        }
+
+        WxAppCodeSubmitDTO appCodeSubmitDTO = wxappCodeSubmitDao.selectByItemList(wxappDTO.getAcid());
+        if(appCodeSubmitDTO == null){
+            return new BaseResponse("小程序还没有发布成功的版本，请发布成功后再提交");
+        }
+
+        String sets = shopSyssetDao.getSets(uniacid);
+        JSONObject tabBar = PHPTransformUtil.getAppTabbarConfig(sets);
+
+        CommitCodeRequest commitCodeRequest = new CommitCodeRequest();
+        commitCodeRequest.setWxAppAcid(appCodeSubmitDTO.getWxAppAcid());
+        commitCodeRequest.setWxAppName(appCodeSubmitDTO.getWxAppName());
+        commitCodeRequest.setTemplateId(appCodeSubmitDTO.getTemplateId());
+        commitCodeRequest.setUserDesc(appCodeSubmitDTO.getUserDesc());
+        commitCodeRequest.setUserVersion(appCodeSubmitDTO.getUserVersion());
+
+        JSONObject extJson = new JSONObject();
+        extJson.put("extEnable", true);
+        extJson.put("extAppid", wxappDTO.getKey());
+        extJson.put("tabBar", tabBar);
+
+        commitCodeRequest.setExtJson(extJson);
+
+        BaseResponse<Integer> response = commitCode(commitCodeRequest);
+        if(response.getCode() == BaseResponse.ok()){
+            SubmitCodeRequest submitModel = new SubmitCodeRequest();
+            submitModel.setAcid(response.getData());
+            submitModel.setWxAppAcId(appCodeSubmitDTO.getWxAppAcid());
+            submitModel.setWxAppName(appCodeSubmitDTO.getWxAppName());
+            submitModel.setJsonArray(JSONArray.parseArray(appCodeSubmitDTO.getItemList()));
+
+            response = submitCode(submitModel);
+            if(response.getCode() != BaseResponse.ok()){
+                response.setMessage("代码提交成功，但是提交审核失败，请联系管理员重新提交审核");
+            }
+        }
+        return response;
+    }
+
+    /**
      * 为授权的小程序帐号上传小程序代码
      * @param commitModel
      * @return
      */
-    public BaseResponse commitCode(CommitCodeRequest commitModel){
+    public BaseResponse<Integer> commitCode(CommitCodeRequest commitModel){
         AccountWxappDTO wxappDTO = accountWxappDao.getModelById(commitModel.getWxAppAcid());
         if(wxappDTO == null){
             return new BaseResponse("小程序不存在");
@@ -410,8 +501,13 @@ public class AccountWxappBll {
         request.put("template_id", commitModel.getTemplateId());
         request.put("user_version", commitModel.getUserVersion());
         request.put("user_desc", commitModel.getUserDesc());
-        JSONObject ext_json = new JSONObject();
-        ext_json.put("extAppid", wxappDTO.getKey());
+        JSONObject ext_json = null;
+        if(commitModel.getExtJson() != null){
+            ext_json = commitModel.getExtJson();
+        } else {
+            ext_json = new JSONObject();
+            ext_json.put("extAppid", wxappDTO.getKey());
+        }
         request.put("ext_json", ext_json.toJSONString());
         try {
             String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(commitModel.getWxAppAcid(), AppTypeEnum.WECHATMINIAPP);
@@ -426,6 +522,8 @@ public class AccountWxappBll {
             updateDTO.setSubmitUser(1);
             updateDTO.setSubmitTime(new Timestamp(System.currentTimeMillis()));
             wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
+            //把数据库ID返回出去
+            result.setData(acId);
             return result;
         } catch (Exception ex){
             return new BaseResponse(ex.getMessage());
@@ -534,6 +632,27 @@ public class AccountWxappBll {
     }
 
     /**
+     * 作废提交的版本
+     * @param acid
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse cancelCode(int acid) throws Exception{
+        WxAppCodeSubmitDTO wxAppCodeSubmitDTO = wxappCodeSubmitDao.selectByPrimaryKey(acid);
+        if(wxAppCodeSubmitDTO == null ){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
+        if( wxAppCodeSubmitDTO.getStatus() == WxAppCodeStatusEnum.RELEASE.getCode()){
+            return new BaseResponse("生产中的版本不能作废");
+        }
+        WxAppCodeSubmitDTO updateDTO = new WxAppCodeSubmitDTO();
+        updateDTO.setAcid(wxAppCodeSubmitDTO.getAcid());
+        updateDTO.setStatus(WxAppCodeStatusEnum.DELETE.getCode());
+        wxappCodeSubmitDao.updateByPrimaryKey(updateDTO);
+        return new BaseResponse();
+    }
+
+    /**
      * 修改小程序线上代码的可见状态
      * @param acid
      * @return
@@ -595,6 +714,121 @@ public class AccountWxappBll {
     }
 
     /**
+     * 查询小程序体验者列表
+     * @param wxAppId
+     * @return
+     */
+    public List<WxappBindTesterModel> getBindTestUser(int wxAppId) throws Exception {
+        List<WxappBindTesterModel> result = new ArrayList<>();
+        AccountWxappDTO wxappDTO = accountWxappDao.getModelById(wxAppId);
+        if (wxappDTO == null) {
+            return result;
+        }
+
+        List<String> dbTesterList = new ArrayList<>();
+        List<WxappBindTesterDTO> dtoList = wxappBindTesterDao.selectByWxAppId(wxAppId, StatusEnum.ENABLES.getCode());
+        if (dtoList != null && dtoList.size() > 0) {
+            for (WxappBindTesterDTO dto : dtoList) {
+                WxappBindTesterModel model = new WxappBindTesterModel();
+                BeanUtils.copyProperties(dto, model);
+                result.add(model);
+                dbTesterList.add(dto.getWxUserStr());
+            }
+        }
+        JSONObject request = new JSONObject();
+        request.put("action", "get_experiencer");
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(wxAppId, AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/memberauth?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if (jsonObject.getInteger("errcode") == BaseResponse.ok()) {
+            JSONArray members = jsonObject.getJSONArray("members");
+            List<String> testerList = new ArrayList<>();
+            for(int i = 0; i < members.size(); i++){
+                testerList.add(members.getJSONObject(i).getString("userstr"));
+            }
+
+            for (String tester : testerList) {
+                if (dbTesterList.contains(tester)) {
+                    continue;
+                }
+                WxappBindTesterDTO insertDto = new WxappBindTesterDTO();
+                insertDto.setWxNumber("未知");
+                insertDto.setWxUserStr(tester);
+                insertDto.setWxAppAcid(wxAppId);
+                insertDto.setUniacid(wxappDTO.getUniacid());
+                insertDto.setStatus(StatusEnum.ENABLES.getCode());
+                insertDto.setCreateDate(new Timestamp(System.currentTimeMillis()));
+                wxappBindTesterDao.insert(insertDto);
+                WxappBindTesterModel model = new WxappBindTesterModel();
+                BeanUtils.copyProperties(insertDto, model);
+                result.add(model);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 给小程序绑定体验者
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse setBindTestUser(WxappBindTesterModel model) throws Exception {
+        AccountWxappDTO accountWxappDTO = accountWxappDao.getModelById(model.getWxAppAcid());
+        if(accountWxappDTO == null){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
+        JSONObject request = new JSONObject();
+        request.put("wechatid", model.getWxNumber().trim());
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(accountWxappDTO.getAcid(), AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/bind_tester?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if(jsonObject.getInteger("errcode") == BaseResponse.ok()) {
+            WxappBindTesterDTO wxappBindTesterDTO = new WxappBindTesterDTO();
+            wxappBindTesterDTO.setWxAppAcid(accountWxappDTO.getAcid());
+            wxappBindTesterDTO.setUniacid(accountWxappDTO.getUniacid());
+            wxappBindTesterDTO.setWxNumber(model.getWxNumber());
+            wxappBindTesterDTO.setWxUserStr(jsonObject.getString("userstr"));
+            wxappBindTesterDTO.setStatus(StatusEnum.ENABLES.getCode());
+            wxappBindTesterDTO.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            wxappBindTesterDao.insert(wxappBindTesterDTO);
+        }
+        BaseResponse result = BaseResponse.getInstance(jsonObject);
+        return result;
+    }
+
+    /**
+     * 删除小程序绑定的体验者
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse delBindTestUser(WxappBindTesterModel model) throws Exception {
+        WxappBindTesterDTO wxappBindTesterDTO = wxappBindTesterDao.selectByPrimaryKey(model.getAcid());
+        if(wxappBindTesterDTO == null){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
+        if(wxappBindTesterDTO.getStatus() != StatusEnum.ENABLES.getCode()){
+            return new BaseResponse();
+        }
+        AccountWxappDTO accountWxappDTO = accountWxappDao.getModelById(model.getWxAppAcid());
+        if(accountWxappDTO == null){
+            return new BaseResponse("操作失败，请刷新后重试");
+        }
+
+        JSONObject request = new JSONObject();
+        request.put("userstr", wxappBindTesterDTO.getWxUserStr().trim());
+        String authorizerAccessToken = refreshTokenBll.getAuthorizerAccessToken(accountWxappDTO.getAcid(), AppTypeEnum.WECHATMINIAPP);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxa/unbind_tester?access_token=" + authorizerAccessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if(jsonObject.getInteger("errcode") == BaseResponse.ok()) {
+            wxappBindTesterDao.updateStatus(wxappBindTesterDTO.getAcid(), StatusEnum.DISABLES.getCode());
+        }
+        BaseResponse result = BaseResponse.getInstance(jsonObject);
+        return result;
+    }
+
+    /**
      * 转换
      * @param commitModel
      * @return
@@ -608,6 +842,7 @@ public class AccountWxappBll {
         dto.setUserDesc(commitModel.getUserDesc());
         dto.setStatus(WxAppCodeStatusEnum.TEMPLATE.getCode());
         dto.setCreateUser(1);
+        dto.setCreateTime(new Timestamp(System.currentTimeMillis()));
         wxappCodeSubmitDao.insert(dto);
         return dto.getAcid();
     }

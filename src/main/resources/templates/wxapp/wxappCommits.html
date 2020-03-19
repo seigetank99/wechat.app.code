@@ -6,34 +6,88 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 </head>
 <body>
+<div class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <div class="layui-form-item">
+            <label class="layui-form-label">搜索项</label>
+            <div class="layui-input-inline">
+                <select name="wxAppId" id="wxAppId" lay-verify="required" lay-filter="selectWxAppId">
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="statusId" id="statusId" lay-verify="required" lay-filter="selectStatusId">
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" data-type="reload" id="do_search">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 <script type="text/html" id="barDemo">
     {{# if (d.status.code == 2){}}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="submit">提交审核</button>
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="look">体验二维码</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="submit">提交审核</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="look">体验二维码</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } else if(d.status.code == 3){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="refresh">刷新审核状态</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="refresh">刷新状态</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="look">体验二维码</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } else if(d.status.code == 4){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="again">重新提交审核</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="again">重新提交</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="lookMessage">失败原因</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } else if(d.status.code == 5){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="release">发布</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="release">发布</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } else if(d.status.code == 6){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="status">禁用</button>
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="revert">回退</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="status">禁用</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="revert">回退</button>
     {{#  } else if(d.status.code == 7){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="status">启用</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="status">启用</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } else if(d.status.code == 8){ }}
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="detail">查看详情</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="detail">查看详情</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="cancel">作废</button>
     {{#  } }}
 </script>
 <script src="../layui/layui.js" charset="utf-8"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
     layui.use('table', function () {
+        $.ajax({
+            url: '/getSelectValue',
+            dataType: 'json',
+            type: 'post',
+            data: {type: 5, acid: 0},
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#wxAppId').append(new Option(item.value, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+
+        $.ajax({
+            url: '/getSelectValue',
+            dataType: 'json',
+            type: 'post',
+            data: {type: 4, acid: 0},
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#statusId').append(new Option(item.value, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+                $("#statusId").find("option[value='2']").prop("selected",true);
+                layui.form.render();
+            }
+        });
+
         var table = layui.table;
         var tableIns = table.render({
             elem: '#test'
@@ -46,13 +100,17 @@
                 [
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'wxAppName', title: '小程序名称', align: 'center', width: 150}
-                    , {field: 'templateVersion', title: '提交代码版本', align: 'center'}
+                    //, {field: 'templateVersion', title: '提交代码版本', align: 'center'}
                     , {field: 'userVersion', title: '代码版本号', align: 'center'}
                     , {field: 'userDesc', title: '代码描述', align: 'center'}
-                    , {field: 'status', title: '状态', align: 'center' ,templet : function(d){ return d.status.name; }}
-                    , {field: 'wxCommitMsg', title: '提交错误信息', align: 'center'}
-                    , {field: 'createTime', title: '创建时间', align: 'center'}
-                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, align: 'center'}
+                    , {
+                    field: 'status', title: '状态', align: 'center', templet: function (d) {
+                        return d.status.name;
+                    }
+                }
+                    //, {field: 'wxCommitMsg', title: '提交错误信息', align: 'center'}
+                    , {field: 'createTime', title: '创建时间', width: 180, align: 'center'}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 300, align: 'center'}
                 ]
             ]
             , page: true
@@ -65,7 +123,7 @@
                 layer.open({
                     title: '体验版本二维码',
                     type: 1,
-                    content: '<img style="height: 100%;width: 100%" src="/getAppLookImg?acid='+ data.wxAppAcid +'"/>',    // 设置跳转的url，跳转到对应的页面
+                    content: '<img style="height: 100%;width: 100%" src="/getAppLookImg?acid=' + data.wxAppAcid + '"/>',    // 设置跳转的url，跳转到对应的页面
                     area: ['260px', '360px'],
                     btn: ['关闭'],
                     yes: function (index, layero) {
@@ -81,9 +139,9 @@
                     btn: ['添加', '取消'],
                     yes: function (index, layero) {
                         // FormID.submit()//访问框架内的提交函数，并进行提交前的检查
-                        var formSubmit=layer.getChildFrame('form', index);
+                        var formSubmit = layer.getChildFrame('form', index);
                         // 获取表单中的提交按钮（在我的表单里第一个button按钮就是提交按钮，使用find方法寻找即可）
-                        for(var i = formSubmit.find('button').length - 1; i>=0; i--){
+                        for (var i = formSubmit.find('button').length - 1; i >= 0; i--) {
                             formSubmit.find('button')[i].click();
                         }
                         // $.each(formSubmit.find('button'),function(index,item) {
@@ -92,9 +150,9 @@
                         // });
                     }
                 });
-            } else if(obj.event === 'refresh'){
+            } else if (obj.event === 'refresh') {
                 $.ajax({
-                    url: '/wxapp/refreshCode?acid='+ data.acid,
+                    url: '/wxapp/refreshCode?acid=' + data.acid,
                     dataType: 'json',
                     type: 'post',
                     data: {},
@@ -114,10 +172,10 @@
                         }
                     }
                 });
-            } else if(obj.event === 'release'){
+            } else if (obj.event === 'release') {
                 layer.confirm('确认要发布代码吗？', {
-                    btn : [ '确定', '取消' ]//按钮
-                }, function(index) {
+                    btn: ['确定', '取消']//按钮
+                }, function (index) {
                     layer.close(index);
                     $.ajax({
                         url: '/wxapp/releaseCode?acid=' + data.acid,
@@ -139,10 +197,10 @@
                         }
                     });
                 })
-            } else if(obj.event === 'revert'){
+            } else if (obj.event === 'revert') {
                 layer.confirm('确认要回退代码吗？', {
-                    btn : [ '确定', '取消' ]//按钮
-                }, function(index) {
+                    btn: ['确定', '取消']//按钮
+                }, function (index) {
                     layer.close(index);
                     $.ajax({
                         url: '/wxapp/revertCode?acid=' + data.acid,
@@ -164,10 +222,10 @@
                         }
                     });
                 })
-            } else if(obj.event === 'status'){
+            } else if (obj.event === 'status') {
                 layer.confirm('确认要禁用代码吗？', {
-                    btn : [ '确定', '取消' ]//按钮
-                }, function(index) {
+                    btn: ['确定', '取消']//按钮
+                }, function (index) {
                     layer.close(index);
                     $.ajax({
                         url: '/wxapp/changeVisitStatus?acid=' + data.acid,
@@ -189,7 +247,7 @@
                         }
                     });
                 })
-            } else if(obj.event === 'again'){
+            } else if (obj.event === 'again') {
                 layer.open({
                     title: '重审小程序代码',
                     type: 2,
@@ -197,13 +255,65 @@
                     area: ['450px', '400px'],
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
-                        var formSubmit=layer.getChildFrame('form', index);
-                        for(var i = formSubmit.find('button').length - 1; i>=0; i--){
+                        var formSubmit = layer.getChildFrame('form', index);
+                        for (var i = formSubmit.find('button').length - 1; i >= 0; i--) {
                             formSubmit.find('button')[i].click();
                         }
                     }
                 });
+            } else if(obj.event === 'lookMessage'){
+                layer.open({
+                    title: '审核未通过原因',
+                    type: 1,
+                    content: '<div class="layui-field-box">'+data.wxSubmitCode+'</div>',
+                    area: ['360px', '360px'],
+                    btn: ['关闭'],
+                    yes: function (index, layero) {
+                        layer.close(index);
+                    }
+                });
+            } else if(obj.event === 'cancel'){
+                layer.confirm('确认要作废已提交的代码版本吗？', {
+                    btn: ['确定', '取消']//按钮
+                }, function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url: '/wxapp/cancelCode?acid=' + data.acid,
+                        dataType: 'json',
+                        type: 'post',
+                        data: {},
+                        success: function (data) {
+                            if (data.code == 0) {
+                                layer.msg('操作成功', {
+                                    icon: 1,
+                                    time: 2000
+                                });
+                                tableIns.reload();
+                            } else {
+                                layer.alert(data.message, {
+                                    title: '错误提示'
+                                })
+                            }
+                        }
+                    });
+                })
             }
+        });
+        // 执行搜索，表格重载
+        $('#do_search').on('click', function () {
+            // 搜索条件
+            var statusId = $('#statusId').val();
+            var wxAppId = $('#wxAppId').val();
+            table.reload('testReload', {
+                method: 'post'
+                , where: {
+                    'wxAppId': wxAppId,
+                    'statusId': statusId
+                }
+                , page: {
+                    curr: 1
+                }
+            });
         });
     });
 </script>

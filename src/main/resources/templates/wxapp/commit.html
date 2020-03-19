@@ -74,6 +74,7 @@
             var page = parent;
             var btn = $(this);
             btn.attr({"disabled":"disabled"});
+            console.log(data.field);
             $.ajax({
                 url: '/wxapp/commitCode',
                 dataType: 'json',

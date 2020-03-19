@@ -204,7 +204,17 @@
                 #{status}
             </foreach>
         </if>
+        order by create_time desc
     </select>
+
+    <select id="selectByItemList" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_COLUMN"/>
+        from
+        <include refid="BASE_TABLE"/>
+        where wxapp_acid = #{wxAppAcId} and `status` in(5,6,7,8) and item_list is not null ORDER BY create_time desc limit 1
+    </select>
+
     <select id="selectByWxAppCount" resultType="int">
         select
             count(1)

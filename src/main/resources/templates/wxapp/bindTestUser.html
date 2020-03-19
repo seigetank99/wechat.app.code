@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>小程序体验者列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css"  media="all">
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">添加体验者</button>
+    </div>
+</script>
+<!--<input type="hidden" id="txtWxAppId" th:value="${wxAppId}">-->
+<!--<input type="hidden" id="txtWxAppName" th:value="${wxAppName}">-->
+<script type="text/html" id="barDemo">
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="del">删除</button>
+</script>
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , id: 'testReload'
+            , url: '/wxapp/getBindTestUser?wxAppId=' + [[${wxAppId}]]
+            , toolbar: '#toolbarDemo'
+            , title: '小程序体验者列表'
+            , method: 'post'
+            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'acid', title: '编号', align: 'center', width: 100}
+                    , {field: 'wxNumber', title: '微信号', align: 'center', width: 150}
+                    , {field: 'createDate', title: '添加时间', align: 'center', width: 200}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 100, align: 'center'}
+                ]
+            ]
+            , page: false
+        });
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            switch (obj.event) {
+                case 'getCheckData':
+                    layer.prompt({title: '请填写绑定体验者的微信号', formType: 2}, function(text, index){
+                        var btn = $(this);
+                        btn.attr({"disabled":"disabled"});
+                        $.ajax({
+                            url: '/wxapp/setBindTestUser',
+                            dataType: 'json',
+                            type: 'post',
+                            data: {wxAppId : [[${wxAppId}]], wxNumber : text},
+                            success: function (resultData) {
+                                var page = parent;
+                                if (resultData.code == 0) {
+                                    layer.msg('操作成功', {
+                                        icon: 1,
+                                        time: 2000
+                                    }, function(){
+                                        page.layer.close(index);
+                                        table.reload();
+                                    });
+                                } else {
+                                    page.layer.msg(resultData.message, {
+                                        icon: 2,
+                                        time: 2000
+                                    }, function () {
+                                        btn.attr("disabled", false);
+                                    });
+                                }
+                            }
+                        });
+                    });
+                    break;
+            }
+        });
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                var btn = $(this);
+                btn.attr({"disabled":"disabled"});
+                $.ajax({
+                    url: '/wxapp/delBindTestUser',
+                    dataType: 'json',
+                    type: 'post',
+                    data: { wxAppAcid : [[${wxAppId}]], acid : data.acid },
+                    success: function (resultData) {
+                        var page = parent;
+                        if (resultData.code == 0) {
+                            layer.msg('操作成功', {
+                                icon: 1,
+                                time: 2000
+                            }, function(){
+                                window.parent.location.reload();
+                            });
+                        } else {
+                            page.layer.msg(resultData.message, {
+                                icon: 2,
+                                time: 2000
+                            }, function () {
+                                btn.attr("disabled", false);
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

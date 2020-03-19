@@ -9,6 +9,7 @@
         <result column="default_acid" jdbcType="INTEGER" property="defaultAcid"/>
         <result column="rank" jdbcType="INTEGER" property="rank"/>
         <result column="title_initial" jdbcType="VARCHAR" property="titleInitial"/>
+        <result column="wechat_open" jdbcType="VARCHAR" property="weChatOpen"/>
     </resultMap>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ims_uni_account
@@ -17,28 +18,44 @@
     <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.UniAccountDTO">
     insert into ims_uni_account (uniacid, groupid, `name`,
       description, default_acid, `rank`,
-      title_initial)
+      title_initial, wechat_open)
     values (#{uniacid,jdbcType=INTEGER}, #{groupid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
       #{description,jdbcType=VARCHAR}, #{defaultAcid,jdbcType=INTEGER}, #{rank,jdbcType=INTEGER},
-      #{titleInitial,jdbcType=VARCHAR})
+      #{titleInitial,jdbcType=VARCHAR},#{weChatOpen,jdbcType=VARCHAR})
   </insert>
     <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.UniAccountDTO">
     update ims_uni_account
-    set groupid = #{groupid,jdbcType=INTEGER},
-      `name` = #{name,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      default_acid = #{defaultAcid,jdbcType=INTEGER},
-      `rank` = #{rank,jdbcType=INTEGER},
-      title_initial = #{titleInitial,jdbcType=VARCHAR}
+    set
+        <if test="groupid != null">
+          groupid = #{groupid,jdbcType=INTEGER},
+        </if>
+        <if test="name != null">
+          `name` = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="description != null">
+          description = #{description,jdbcType=VARCHAR},
+        </if>
+        <if test="defaultAcid != null">
+          default_acid = #{defaultAcid,jdbcType=INTEGER},
+        </if>
+        <if test="rank != null">
+          `rank` = #{rank,jdbcType=INTEGER},
+        </if>
+        <if test="titleInitial != null">
+          title_initial = #{titleInitial,jdbcType=VARCHAR},
+        </if>
+        <if test="weChatOpen != null">
+            wechat_open = #{weChatOpen,jdbcType=VARCHAR}
+        </if>
     where uniacid = #{uniacid,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select uniacid, groupid, `name`, description, default_acid, `rank`, title_initial
+    select uniacid, groupid, `name`, description, default_acid, `rank`, title_initial, wechat_open
     from ims_uni_account
     where uniacid = #{uniacid,jdbcType=INTEGER}
   </select>
     <select id="selectAll" resultMap="BaseResultMap">
-    select uniacid, groupid, `name`, description, default_acid, `rank`, title_initial
+    select uniacid, groupid, `name`, description, default_acid, `rank`, title_initial, wechat_open
     from ims_uni_account
   </select>
 </mapper>

@@ -115,4 +115,9 @@ public class AccountWechatDTO {
      * 微信公众号的主体名称
      */
     private String principal_name;
+    /**
+     * 是否绑定到微信开放平台
+     */
+    private Integer bind_wechat_open;
+    private String bind_wechat_open_key;
 }

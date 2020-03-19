@@ -3,7 +3,7 @@ package cn.loftown.wechat.app.code.biz;
 import cn.loftown.wechat.app.code.dao.CoreCacheDao;
 import cn.loftown.wechat.app.code.dto.CoreCacheDTO;
 import cn.loftown.wechat.app.code.entity.ComponentModel;
-import cn.loftown.wechat.app.code.util.TransforUtil;
+import cn.loftown.wechat.app.code.util.PHPTransformUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class ComponentBll {
             return null;
         }
         try {
-            HashMap<String, String> platformMap = TransforUtil.formatPhpDataToMap(cacheDTO.getValue());
+            HashMap<String, String> platformMap = PHPTransformUtil.formatPhpDataToMap(cacheDTO.getValue());
             if(platformMap != null && platformMap.size() > 0){
                 ComponentModel componentModel = new ComponentModel();
                 componentModel.setAppId(platformMap.get("appid"));

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.lf.WxappBindTesterDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.lf.WxappBindTesterDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid"/>
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid"/>
+        <result column="wxapp_acid" jdbcType="INTEGER" property="wxAppAcid"/>
+        <result column="wx_number" jdbcType="VARCHAR" property="wxNumber"/>
+        <result column="wx_userstr" jdbcType="VARCHAR" property="wxUserStr"/>
+        <result column="status" jdbcType="SMALLINT" property="status"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lf_wxapp_bind_tester
+    where acid = #{acid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.lf.WxappBindTesterDTO">
+    insert into lf_wxapp_bind_tester (acid, uniacid, wxapp_acid,
+      wx_number, wx_userstr, `status`,
+      create_date)
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{wxAppAcid,jdbcType=INTEGER},
+      #{wxNumber,jdbcType=VARCHAR}, #{wxUserStr,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
+      #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.lf.WxappBindTesterDTO">
+    update lf_wxapp_bind_tester
+    set uniacid = #{uniacid,jdbcType=INTEGER},
+      wxapp_acid = #{wxAppAcid,jdbcType=INTEGER},
+      wx_number = #{wxNumber,jdbcType=VARCHAR},
+      wx_userstr = #{wxUserStr,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=SMALLINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where acid = #{acid,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select acid, uniacid, wxapp_acid, wx_number, wx_userstr, `status`, create_date
+    from lf_wxapp_bind_tester
+    where acid = #{acid,jdbcType=INTEGER}
+  </select>
+    <select id="selectByWxAppId" resultMap="BaseResultMap">
+        select acid, uniacid, wxapp_acid, wx_number, wx_userstr, `status`, create_date
+        from lf_wxapp_bind_tester
+        where wxapp_acid = #{wxAppId}
+        <if test="status != null">
+            and `status` = #{status}
+        </if>
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select acid, uniacid, wxapp_acid, wx_number, wx_userstr, `status`, create_date
+    from lf_wxapp_bind_tester
+  </select>
+</mapper>

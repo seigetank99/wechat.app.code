@@ -2,6 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.loftown.wechat.app.code.dao.AccountWechatDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.AccountWechatDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
+        <result column="token" jdbcType="VARCHAR" property="token" />
+        <result column="encodingaeskey" jdbcType="VARCHAR" property="encodingaeskey" />
+        <result column="level" jdbcType="TINYINT" property="level" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="account" jdbcType="VARCHAR" property="account" />
+        <result column="original" jdbcType="VARCHAR" property="original" />
+        <result column="signature" jdbcType="VARCHAR" property="signature" />
+        <result column="country" jdbcType="VARCHAR" property="country" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="lastupdate" jdbcType="INTEGER" property="lastupdate" />
+        <result column="key" jdbcType="VARCHAR" property="key" />
+        <result column="secret" jdbcType="VARCHAR" property="secret" />
+        <result column="styleid" jdbcType="INTEGER" property="styleid" />
+        <result column="subscribeurl" jdbcType="VARCHAR" property="subscribeurl" />
+        <result column="auth_refresh_token" jdbcType="VARCHAR" property="auth_refresh_token" />
+        <result column="head_img" jdbcType="VARCHAR" property="head_img" />
+        <result column="service_type_info" jdbcType="SMALLINT" property="service_type_info" />
+        <result column="verify_type_info" jdbcType="SMALLINT" property="verify_type_info" />
+        <result column="alias" jdbcType="VARCHAR" property="alias" />
+        <result column="qrcode_url" jdbcType="VARCHAR" property="qrcode_url" />
+        <result column="principal_name" jdbcType="VARCHAR" property="principal_name" />
+        <result column="bind_wechat_open" jdbcType="SMALLINT" property="bind_wechat_open" />
+        <result column="bind_wechat_open_key" jdbcType="VARCHAR" property="bind_wechat_open_key" />
+    </resultMap>
 
     <sql id="BASE_TABLE">
         ims_account_wechats
@@ -30,17 +60,106 @@
       username, `password`, lastupdate,
       `key`, secret, styleid,
       subscribeurl, auth_refresh_token, head_img,
-      service_type_info, verify_type_info, `alias`,
-      qrcode_url, principal_name)
+      service_type_info, verify_type_info,
+      `alias`, qrcode_url, principal_name,
+      bind_wechat_open, bind_wechat_open_key
+      )
     values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR},
       #{encodingaeskey,jdbcType=VARCHAR}, #{level,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
       #{account,jdbcType=VARCHAR}, #{original,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR},
       #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
       #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{lastupdate,jdbcType=INTEGER},
       #{key,jdbcType=VARCHAR}, #{secret,jdbcType=VARCHAR}, #{styleid,jdbcType=INTEGER},
-      #{subscribeurl,jdbcType=VARCHAR}, #{authRefreshToken,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR},
-      #{serviceTypeInfo,jdbcType=SMALLINT}, #{verifyTypeInfo,jdbcType=SMALLINT}, #{alias,jdbcType=VARCHAR},
-      #{qrcodeUrl,jdbcType=VARCHAR}, #{principalName,jdbcType=VARCHAR})
+      #{subscribeurl,jdbcType=VARCHAR}, #{auth_refresh_token,jdbcType=VARCHAR}, #{head_img,jdbcType=VARCHAR},
+      #{service_type_info,jdbcType=SMALLINT}, #{verify_type_info,jdbcType=SMALLINT},
+      #{alias,jdbcType=VARCHAR}, #{qrcode_url,jdbcType=VARCHAR}, #{principal_name,jdbcType=VARCHAR},
+      #{bind_wechat_open,jdbcType=SMALLINT}, #{bind_wechat_open_key,jdbcType=VARCHAR}
+      )
   </insert>
-
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.AccountWechatDTO">
+    update ims_account_wechats
+    set
+        <if test="uniacid != null">
+          uniacid = #{uniacid,jdbcType=INTEGER},
+        </if>
+        <if test="token != null">
+          token = #{token,jdbcType=VARCHAR},
+        </if>
+        <if test="encodingaeskey != null">
+          encodingaeskey = #{encodingaeskey,jdbcType=VARCHAR},
+        </if>
+        <if test="level != null">
+          `level` = #{level,jdbcType=TINYINT},
+        </if>
+        <if test="name != null">
+          `name` = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="account != null">
+          account = #{account,jdbcType=VARCHAR},
+        </if>
+        <if test="original != null">
+          original = #{original,jdbcType=VARCHAR},
+        </if>
+        <if test="signature != null">
+          signature = #{signature,jdbcType=VARCHAR},
+        </if>
+        <if test="country != null">
+          country = #{country,jdbcType=VARCHAR},
+        </if>
+        <if test="province != null">
+          province = #{province,jdbcType=VARCHAR},
+        </if>
+        <if test="city != null">
+          city = #{city,jdbcType=VARCHAR},
+        </if>
+        <if test="username != null">
+          username = #{username,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null">
+          `password` = #{password,jdbcType=VARCHAR},
+        </if>
+        <if test="lastupdate != null">
+          lastupdate = #{lastupdate,jdbcType=INTEGER},
+        </if>
+        <if test="key != null">
+          `key` = #{key,jdbcType=VARCHAR},
+        </if>
+        <if test="secret != null">
+          secret = #{secret,jdbcType=VARCHAR},
+        </if>
+        <if test="styleid != null">
+          styleid = #{styleid,jdbcType=INTEGER},
+        </if>
+        <if test="subscribeurl != null">
+          subscribeurl = #{subscribeurl,jdbcType=VARCHAR},
+        </if>
+        <if test="auth_refresh_token != null">
+          auth_refresh_token = #{auth_refresh_token,jdbcType=VARCHAR},
+        </if>
+        <if test="head_img != null">
+          head_img = #{head_img,jdbcType=VARCHAR},
+        </if>
+        <if test="service_type_info != null">
+          service_type_info = #{service_type_info,jdbcType=SMALLINT},
+        </if>
+        <if test="verify_type_info != null">
+          verify_type_info = #{verify_type_info,jdbcType=SMALLINT},
+        </if>
+        <if test="alias != null">
+          `alias` = #{alias,jdbcType=VARCHAR},
+        </if>
+        <if test="qrcode_url != null">
+          qrcode_url = #{qrcode_url,jdbcType=VARCHAR},
+        </if>
+        <if test="principal_name != null">
+          principal_name = #{principal_name,jdbcType=VARCHAR},
+        </if>
+        <if test="bind_wechat_open != null">
+          bind_wechat_open = #{bind_wechat_open,jdbcType=SMALLINT},
+        </if>
+        <if test="bind_wechat_open_key != null">
+          bind_wechat_open_key = #{bind_wechat_open_key,jdbcType=VARCHAR}
+        </if>
+    where acid = #{acid,jdbcType=INTEGER}
+  </update>
 </mapper>

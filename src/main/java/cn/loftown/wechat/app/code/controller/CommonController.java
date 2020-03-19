@@ -3,9 +3,11 @@ package cn.loftown.wechat.app.code.controller;
 import cn.loftown.wechat.app.code.biz.AccountWxappBll;
 import cn.loftown.wechat.app.code.biz.CodeBaseBll;
 import cn.loftown.wechat.app.code.biz.RefreshTokenBll;
+import cn.loftown.wechat.app.code.entity.AccountWxappModel;
 import cn.loftown.wechat.app.code.entity.CodeBaseModel;
 import cn.loftown.wechat.app.code.entity.SelectModel;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
+import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -46,6 +49,14 @@ public class CommonController {
                     //获取授权小程序帐号已设置的类目
                     getWxAppCategory(selectModels, acid);
                     break;
+                case 4:
+                    //获取代码审核的状态列表
+                    getWxAppCodeStatus(selectModels);
+                    break;
+                case 5:
+                    //查询所有的小程序
+                    getWxApps(selectModels);
+                    break;
             }
         } catch (Exception ex){
 
@@ -71,6 +82,27 @@ public class CommonController {
             System.out.println(ex.getMessage());
         }
         return null;
+    }
+
+    private void getWxApps(List<SelectModel> selectModels){
+        List<AccountWxappModel> wxappModelList = accountWxappBll.getAccountWxAppByPage(1);
+        if(wxappModelList != null && wxappModelList.size() > 0){
+            for (AccountWxappModel wxappModel : wxappModelList){
+                SelectModel selectModel = new SelectModel();
+                selectModel.setId(wxappModel.getAcid().toString());
+                selectModel.setValue(wxappModel.getName());
+                selectModels.add(selectModel);
+            }
+        }
+    }
+
+    private void getWxAppCodeStatus(List<SelectModel> selectModels){
+        Arrays.stream(WxAppCodeStatusEnum.values()).forEach(item ->{
+            SelectModel selectModel = new SelectModel();
+            selectModel.setId(item.getCode().toString());
+            selectModel.setValue(item.getName());
+            selectModels.add(selectModel);
+        });
     }
 
     private void getTemplates(List<SelectModel> selectModels){

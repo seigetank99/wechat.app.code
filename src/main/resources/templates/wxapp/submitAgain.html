@@ -45,7 +45,6 @@
             var submitData = data.field;
             submitData.acid=[[${acid}]];
             submitData.wxAppAcId = [[${wxApp.acid}]];
-            console.log(submitData);
             $.ajax({
                 url: '/wxapp/submitCode',
                 dataType: 'json',
@@ -64,7 +63,6 @@
                             window.parent.location.reload();
                         });
                     } else {
-                        console.log(111);
                         page.layer.msg(resultData.message, {
                             icon: 2,
                             time: 2000

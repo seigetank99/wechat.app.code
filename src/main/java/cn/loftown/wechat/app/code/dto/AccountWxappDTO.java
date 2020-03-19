@@ -26,6 +26,7 @@ public class AccountWxappDTO implements Serializable {
      * 接口权限级别:1.未认证2.已认证
      */
     private Integer level;
+    private Integer statusId;
     /**
      * 微信小程序帐号
      */
@@ -62,4 +63,9 @@ public class AccountWxappDTO implements Serializable {
      * 头像地址
      */
     private String head_img;
+    /**
+     * 是否绑定到微信开放平台
+     */
+    private Integer bind_wechat_open;
+    private String bind_wechat_open_key;
 }

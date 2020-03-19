@@ -11,14 +11,7 @@ public enum AppTypeEnum {
      * 未知
      */
     UNKNOWN(-1, "未知"),
-    /**
-     * 普通订阅号
-     */
     WECHATSERVICE(1, "微信公众号"),
-
-    /**
-     * 认证订阅号
-     */
     WECHATMINIAPP(2,"微信小程序");
 
     private Integer code;

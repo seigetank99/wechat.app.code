@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface WxappCodeSubmitDao {
+
     int deleteByPrimaryKey(Integer acid);
 
     @Options(useGeneratedKeys = true, keyProperty = "acid", keyColumn = "acid")
@@ -21,4 +22,11 @@ public interface WxappCodeSubmitDao {
                                            @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
 
     int updateByPrimaryKey(WxAppCodeSubmitDTO record);
+
+    /**
+     * 查询一条最近审核成功的记录
+     * @param wxAppAcId
+     * @return
+     */
+    WxAppCodeSubmitDTO selectByItemList(@Param("wxAppAcId")Integer wxAppAcId);
 }

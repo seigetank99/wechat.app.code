@@ -20,19 +20,22 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">禁用选中公众号</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">禁用选中小程序</button>
     </div>
 </script>
 
 <script type="text/html" id="barDemo">
-    <button type="button" class="layui-btn layui-btn-sm" lay-event="add">发布代码</button>
-    <button type="button" class="layui-btn layui-btn-sm" lay-event="domain">域名设置</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="add">发布</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="domain">域名</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="tester">体验者</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="reload">刷新</button>
 </script>
 <script src="../layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
     layui.use('table', function() {
         var table = layui.table;
-        table.render({
+        var tableIns = table.render({
             elem: '#test'
             , id: 'testReload'
             , url: '/wxapp/getWxapps'
@@ -45,11 +48,10 @@
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'name', title: '名称', align: 'center', width: 150}
                     , {field: 'headImg', title: '头像', width: 100, align: 'center', templet:function (d) { return  '<div><img src="'+ d.headImg + '" style="height: 45px;width: 45px;"></div>'}  }
-                    , {field: 'account', title: '小程序帐号', align: 'center'}
                     , {field: 'appId', title: '小程序APPID', align: 'center'}
                     , {field: 'original', title: '小程序原始ID', align: 'center'}
                     , {field: 'principalName', title: '小程序主体名称', align: 'center'}
-                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, align: 'center'}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 300, align: 'center'}
                 ]
             ]
             , page: true
@@ -101,6 +103,39 @@
                         var submited = formSubmit.find('button')[0];
                         // 触发点击事件，会对表单进行验证，验证成功则提交表单，失败则返回错误信息
                         submited.click();
+                    }
+                });
+            } else if (obj.event === 'tester') {
+                layer.open({
+                    title: '小程序' + data.name + '体验者列表',
+                    type: 2,
+                    content: '/wxapp/tester?acid=' + data.acid + '&name=' + data.name,    // 设置跳转的url，跳转到对应的页面
+                    area: ['600px', '600px'],
+                    btn: ['关闭']
+                });
+            }  else if (obj.event === 'reload') {
+                var btn = $(this);
+                btn.attr({"disabled":"disabled"});
+                $.ajax({
+                    url: '/wxapp/refreshInfo?acid=' + data.acid,
+                    dataType: 'json',
+                    type: 'post',
+                    data: {},
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg('操作成功', {
+                                icon: 1,
+                                time: 2000
+                            });
+                            tableIns.reload();
+                        } else {
+                            layer.msg(data.message, {
+                                icon: 2,
+                                time: 2000
+                            }, function () {
+                                btn.attr("disabled", false);
+                            });
+                        }
                     }
                 });
             }

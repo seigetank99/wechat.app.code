@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.AccountWxappDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.AccountWxappDTO">
+        <id column="acid" jdbcType="INTEGER" property="acid" />
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid" />
+        <result column="token" jdbcType="VARCHAR" property="token" />
+        <result column="encodingaeskey" jdbcType="VARCHAR" property="encodingaeskey" />
+        <result column="level" jdbcType="TINYINT" property="level" />
+        <result column="account" jdbcType="VARCHAR" property="account" />
+        <result column="original" jdbcType="VARCHAR" property="original" />
+        <result column="key" jdbcType="VARCHAR" property="key" />
+        <result column="secret" jdbcType="VARCHAR" property="secret" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="appdomain" jdbcType="VARCHAR" property="appdomain" />
+        <result column="auth_refresh_token" jdbcType="VARCHAR" property="auth_refresh_token" />
+        <result column="principal_name" jdbcType="VARCHAR" property="principal_name" />
+        <result column="head_img" jdbcType="VARCHAR" property="head_img" />
+        <result column="bind_wechat_open" jdbcType="SMALLINT" property="bind_wechat_open" />
+        <result column="bind_wechat_open_key" jdbcType="VARCHAR" property="bind_wechat_open_key" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ims_account_wxapp
+    where acid = #{acid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.AccountWxappDTO">
+    insert into ims_account_wxapp (acid, uniacid, token,
+      encodingaeskey, `level`, account,
+      original, `key`, secret,
+      `name`, appdomain, auth_refresh_token,
+      principal_name, head_img, bind_wechat_open,
+      bind_wechat_open_key)
+    values (#{acid,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR},
+      #{encodingaeskey,jdbcType=VARCHAR}, #{level,jdbcType=TINYINT}, #{account,jdbcType=VARCHAR},
+      #{original,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{secret,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{appdomain,jdbcType=VARCHAR}, #{auth_refresh_token,jdbcType=VARCHAR},
+      #{principal_name,jdbcType=VARCHAR}, #{head_img,jdbcType=VARCHAR}, #{bind_wechat_open,jdbcType=SMALLINT},
+      #{bind_wechat_open_key,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.AccountWxappDTO">
+    update ims_account_wxapp
+    set
+        <if test="uniacid != null">
+          uniacid = #{uniacid,jdbcType=INTEGER},
+        </if>
+        <if test="token != null">
+          token = #{token,jdbcType=VARCHAR},
+        </if>
+        <if test="encodingaeskey != null">
+          encodingaeskey = #{encodingaeskey,jdbcType=VARCHAR},
+        </if>
+        <if test="level != null">
+          `level` = #{level,jdbcType=TINYINT},
+        </if>
+        <if test="account != null">
+          account = #{account,jdbcType=VARCHAR},
+        </if>
+        <if test="original != null">
+          original = #{original,jdbcType=VARCHAR},
+        </if>
+        <if test="key != null">
+          `key` = #{key,jdbcType=VARCHAR},
+        </if>
+        <if test="secret != null">
+          secret = #{secret,jdbcType=VARCHAR},
+        </if>
+        <if test="name != null">
+          `name` = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="appdomain != null">
+          appdomain = #{appdomain,jdbcType=VARCHAR},
+        </if>
+        <if test="auth_refresh_token != null">
+          auth_refresh_token = #{auth_refresh_token,jdbcType=VARCHAR},
+        </if>
+        <if test="principal_name != null">
+          principal_name = #{principal_name,jdbcType=VARCHAR},
+        </if>
+        <if test="head_img != null">
+          head_img = #{head_img,jdbcType=VARCHAR},
+        </if>
+        <if test="bind_wechat_open != null">
+          bind_wechat_open = #{bind_wechat_open,jdbcType=SMALLINT},
+        </if>
+        <if test="bind_wechat_open_key != null">
+          bind_wechat_open_key = #{bind_wechat_open_key,jdbcType=VARCHAR}
+        </if>
+    where acid = #{acid,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select acid, uniacid, token, encodingaeskey, `level`, account, original, `key`, secret,
+    `name`, appdomain, auth_refresh_token, principal_name, head_img, bind_wechat_open,
+    bind_wechat_open_key
+    from ims_account_wxapp
+    where acid = #{acid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select acid, uniacid, token, encodingaeskey, `level`, account, original, `key`, secret,
+    `name`, appdomain, auth_refresh_token, principal_name, head_img, bind_wechat_open,
+    bind_wechat_open_key
+    from ims_account_wxapp
+  </select>
+</mapper>

@@ -17,5 +17,9 @@ public class UniAccountDTO {
     private Integer rank;
 
     private String titleInitial;
+    /**
+     * 微信开放平台ID
+     */
+    private String weChatOpen;
 
 }

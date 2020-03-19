@@ -24,6 +24,11 @@ public class WeChatController {
         response.setCode(0);
         response.setMessage("");
         response.setTotal(2L);
+        try {
+            accountWechatBll.setWeChatTemplateMessage(1);
+        } catch (Exception ex){
+
+        }
         return response;
     }
 }

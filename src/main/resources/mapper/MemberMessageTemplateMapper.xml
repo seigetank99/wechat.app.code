@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.loftown.wechat.app.code.dao.MemberMessageTemplateDao">
+    <resultMap id="BaseResultMap" type="cn.loftown.wechat.app.code.dto.MemberMessageTemplateDTO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uniacid" jdbcType="INTEGER" property="uniacid"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="template_id" jdbcType="VARCHAR" property="template_id"/>
+        <result column="template_name" jdbcType="VARCHAR" property="template_name"/>
+        <result column="firstcolor" jdbcType="VARCHAR" property="firstcolor"/>
+        <result column="remarkcolor" jdbcType="VARCHAR" property="remarkcolor"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="createtime" jdbcType="INTEGER" property="createtime"/>
+        <result column="sendtimes" jdbcType="INTEGER" property="sendtimes"/>
+        <result column="sendcount" jdbcType="INTEGER" property="sendcount"/>
+        <result column="typecode" jdbcType="VARCHAR" property="typecode"/>
+        <result column="messagetype" jdbcType="BIT" property="messagetype"/>
+        <result column="send_desc" jdbcType="VARCHAR" property="send_desc"/>
+        <result column="first" jdbcType="LONGVARCHAR" property="first"/>
+        <result column="data" jdbcType="LONGVARCHAR" property="data"/>
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from ims_ewei_shop_member_message_template
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByUniacid" parameterType="java.lang.Integer">
+        delete from ims_ewei_shop_member_message_template
+        where uniacid = #{uniacid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.loftown.wechat.app.code.dto.MemberMessageTemplateDTO">
+    insert into ims_ewei_shop_member_message_template (id, uniacid, title,
+      template_id, template_name, firstcolor,
+      remarkcolor, url, createtime,
+      sendtimes, sendcount, typecode,
+      messagetype, send_desc, `first`,
+      `data`, remark)
+    values (#{id,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+      #{template_id,jdbcType=VARCHAR}, #{template_name,jdbcType=VARCHAR}, #{firstcolor,jdbcType=VARCHAR},
+      #{remarkcolor,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{createtime,jdbcType=INTEGER},
+      #{sendtimes,jdbcType=INTEGER}, #{sendcount,jdbcType=INTEGER}, #{typecode,jdbcType=VARCHAR},
+      #{messagetype,jdbcType=BIT}, #{send_desc,jdbcType=VARCHAR}, #{first,jdbcType=LONGVARCHAR},
+      #{data,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.loftown.wechat.app.code.dto.MemberMessageTemplateDTO">
+        update ims_ewei_shop_member_message_template
+        set
+        <if test="uniacid != null">
+            uniacid = #{uniacid,jdbcType=INTEGER},
+        </if>
+        <if test="title != null">
+            title = #{title,jdbcType=VARCHAR},
+        </if>
+        <if test="template_id != null">
+            template_id = #{template_id,jdbcType=VARCHAR},
+        </if>
+        <if test="template_name != null">
+            template_name = #{template_name,jdbcType=VARCHAR},
+        </if>
+        <if test="firstcolor != null">
+            firstcolor = #{firstcolor,jdbcType=VARCHAR},
+        </if>
+        <if test="remarkcolor != null">
+            remarkcolor = #{remarkcolor,jdbcType=VARCHAR},
+        </if>
+        <if test="url != null">
+            url = #{url,jdbcType=VARCHAR},
+        </if>
+        <if test="sendtimes != null">
+            sendtimes = #{sendtimes,jdbcType=INTEGER},
+        </if>
+        <if test="sendcount != null">
+            sendcount = #{sendcount,jdbcType=INTEGER},
+        </if>
+        <if test="typecode != null">
+            typecode = #{typecode,jdbcType=VARCHAR},
+        </if>
+        <if test="messagetype != null">
+            messagetype = #{messagetype,jdbcType=BIT},
+        </if>
+        <if test="send_desc != null">
+            send_desc = #{send_desc,jdbcType=VARCHAR},
+        </if>
+        <if test="first != null">
+            `first` = #{first,jdbcType=LONGVARCHAR},
+        </if>
+        <if test="data != null">
+            `data` = #{data,jdbcType=LONGVARCHAR},
+        </if>
+        <if test="remark != null">
+            remark = #{remark,jdbcType=LONGVARCHAR}
+        </if>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, uniacid, title, template_id, template_name, firstcolor, remarkcolor, url,
+    createtime, sendtimes, sendcount, typecode, messagetype, send_desc, `first`, `data`,
+    remark
+    from ims_ewei_shop_member_message_template
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectByTemplateName" resultMap="BaseResultMap">
+        select id, uniacid, title, template_id, template_name, firstcolor, remarkcolor, url,
+        createtime, sendtimes, sendcount, typecode, messagetype, send_desc, `first`, `data`,
+        remark
+        from ims_ewei_shop_member_message_template
+        where
+        uniacid = #{uniacid,jdbcType=INTEGER}
+        <if test="templateName != null">
+            and template_name = #{templateName,jdbcType=VARCHAR}
+        </if>
+    </select>
+</mapper>

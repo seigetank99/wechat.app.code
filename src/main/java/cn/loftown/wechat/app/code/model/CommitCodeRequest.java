@@ -1,5 +1,6 @@
 package cn.loftown.wechat.app.code.model;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 @Data
@@ -24,4 +25,8 @@ public class CommitCodeRequest {
      * 代码描述，开发者可自定义
      */
     private String userDesc;
+    /**
+     * ext.json，详情查看https://developers.weixin.qq.com/miniprogram/dev/devtools/ext.html
+     */
+    private JSONObject extJson;
 }

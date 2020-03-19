@@ -10,7 +10,7 @@ import cn.loftown.wechat.app.code.entity.AccessTokenModel;
 import cn.loftown.wechat.app.code.entity.ComponentModel;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
 import cn.loftown.wechat.app.code.util.HttpUtil;
-import cn.loftown.wechat.app.code.util.TransforUtil;
+import cn.loftown.wechat.app.code.util.PHPTransformUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +31,8 @@ public class RefreshTokenBll {
     private AccountWxappDao accountWxappDao;
     @Autowired
     private ComponentBll componentBll;
+//    @Resource
+//    private RedisUtils redisUtils;
 
     private Long boundary = 2 * 60 * 1000L;
 
@@ -42,17 +44,19 @@ public class RefreshTokenBll {
         String componentAccessKey = "account:component:assesstoken";
         CoreCacheDTO componentCacheDTO = coreCacheDao.getCacheValue(componentAccessKey);
         if(componentCacheDTO != null) {
-            AccessTokenModel accessTokenModel = TransforUtil.getComponentAccessToken(componentCacheDTO.getValue());
+            AccessTokenModel accessTokenModel = PHPTransformUtil.getComponentAccessToken(componentCacheDTO.getValue());
             if (accessTokenModel.getTimeOutDate().getTime() > System.currentTimeMillis() + boundary) {
                 return accessTokenModel.getAccessToken();
             }
         }
+
+        //String ticket = redisUtils.get("account:ticket");
         CoreCacheDTO ticketCacheDTO = coreCacheDao.getCacheValue("account:ticket");
         if(ticketCacheDTO == null){
             return null;
         }
 
-        HashMap<String,String> hashMap = TransforUtil.formatPhpDataToMap(ticketCacheDTO.getValue());
+        HashMap<String,String> hashMap = PHPTransformUtil.formatPhpDataToMap(ticketCacheDTO.getValue());
 
         //查询下平台的AppID
         ComponentModel componentModel = componentBll.getComponentInfo();
@@ -70,7 +74,7 @@ public class RefreshTokenBll {
         String componentAccessToken = jsonObject.getString("component_access_token");
         Long expires = jsonObject.getLong("expires_in") * 1000;
 
-        String value = TransforUtil.formatMapToPhpData(componentAccessToken, System.currentTimeMillis() + expires);
+        String value = PHPTransformUtil.formatMapToPhpData(componentAccessToken, System.currentTimeMillis() + expires);
 
         //拿到结果后刷新数据库的记录
         saveToDB(componentCacheDTO, componentAccessKey, value);
@@ -110,7 +114,7 @@ public class RefreshTokenBll {
         //先去数据库查询下是否有AccessToken，有了的话验证下是否过期。未过期直接返回，已过期从新获取
         CoreCacheDTO authorCacheDTO = coreCacheDao.getCacheValue(authorizerAccessKey);
         if(authorCacheDTO != null){
-            AccessTokenModel accessTokenModel = TransforUtil.getComponentAccessToken(authorCacheDTO.getValue());
+            AccessTokenModel accessTokenModel = PHPTransformUtil.getComponentAccessToken(authorCacheDTO.getValue());
             if(accessTokenModel.getTimeOutDate().getTime() > System.currentTimeMillis() + boundary){
                 return accessTokenModel.getAccessToken();
             }
@@ -130,7 +134,7 @@ public class RefreshTokenBll {
         String authorizerAccessToken = jsonObject.getString("authorizer_access_token");
         Long expires = jsonObject.getLong("expires_in") * 1000;
 
-        String value = TransforUtil.formatMapToPhpData(authorizerAccessToken, System.currentTimeMillis() + expires);
+        String value = PHPTransformUtil.formatMapToPhpData(authorizerAccessToken, System.currentTimeMillis() + expires);
 
         //拿到结果后刷新数据库的记录
         saveToDB(authorCacheDTO, authorizerAccessKey, value);

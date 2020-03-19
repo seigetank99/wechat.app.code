@@ -17,4 +17,6 @@ public interface AccountWechatDao {
     void updateInfo(AccountWechatDTO accountWechatDTO);
 
     int insert(AccountWechatDTO record);
+
+    int updateByPrimaryKey(AccountWechatDTO record);
 }
