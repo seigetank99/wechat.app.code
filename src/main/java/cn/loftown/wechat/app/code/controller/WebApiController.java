@@ -5,6 +5,7 @@ import cn.loftown.wechat.app.code.biz.AccountWechatBll;
 import cn.loftown.wechat.app.code.biz.AccountWxappBll;
 import cn.loftown.wechat.app.code.biz.RefreshTokenBll;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
+import cn.loftown.wechat.app.code.model.BaseRequest;
 import cn.loftown.wechat.app.code.model.BindOpenToWeChatRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +52,15 @@ public class WebApiController {
     public BaseResponse bindOpenToWeChat(BindOpenToWeChatRequest request) {
         try {
             return accountWechatBll.bindOpenToWeChat(request);
+        } catch (Exception ex) {
+            return new BaseResponse(ex.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/setWeChatTemplateMsg")
+    public BaseResponse setWeChatTemplateMsg(BaseRequest request) {
+        try {
+            return accountWechatBll.setWeChatTemplateMsg(request.getWxAppAcid());
         } catch (Exception ex) {
             return new BaseResponse(ex.getMessage());
         }

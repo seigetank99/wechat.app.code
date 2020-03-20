@@ -62,4 +62,23 @@ public class RedisUtils {
         }
         return result;
     }
+
+    /**
+     * 获取redisKey
+     * @param uniacid
+     * @param accountKey 公众号
+     * @param key
+     * @return
+     */
+    public String getkey(int uniacid, String accountKey, String key){
+        return String.format("ewei_shopv2_syscache_lf_%s_%s_%s", uniacid, accountKey, key);
+    }
+
+    public String getGlobalkey(String key){
+        return String.format("ewei_shopv2_syscache_lf_global_%s", key);
+    }
+
+    public static String getDBCacheKey(int uniacid, String key){
+        return "ewei_shop_" + new Md5(uniacid + "_new_" + key).get32();
+    }
 }

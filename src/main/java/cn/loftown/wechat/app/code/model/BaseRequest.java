@@ -7,4 +7,5 @@ public class BaseRequest {
     private Integer pageIndex;
     private Integer pageSize;
     private Integer uniacid;
+    private Integer wxAppAcid;
 }

@@ -29,7 +29,7 @@ public class HomeController {
     public String index(){
         try {
             //accountWechatBll.setWeChatTemplateMessage(9);
-            accountWechatBll.setWeChatTemplateMessageConfig(9);
+            accountWechatBll.setWeChatTemplateMessageConfig(1);
         } catch (Exception ex){
             System.out.println(ex);
         }

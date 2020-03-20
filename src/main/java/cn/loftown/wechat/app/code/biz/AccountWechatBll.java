@@ -13,6 +13,7 @@ import cn.loftown.wechat.app.code.exception.PredictException;
 import cn.loftown.wechat.app.code.model.BindOpenToWeChatRequest;
 import cn.loftown.wechat.app.code.util.HttpUtil;
 import cn.loftown.wechat.app.code.util.PHPTransformUtil;
+import cn.loftown.wechat.app.code.util.RedisUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.phprpc.util.AssocArray;
@@ -44,6 +45,8 @@ public class AccountWechatBll {
     RefreshTokenBll refreshTokenBll;
     @Autowired
     ComponentBll componentBll;
+    @Autowired
+    CacheBll cacheBll;
 
     /**
      * 分页查询公众号列表
@@ -126,12 +129,48 @@ public class AccountWechatBll {
     }
 
     /**
+     * 同步默认公众号消息模版
+     * @param acid
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse setWeChatTemplateMsg(Integer acid) throws Exception {
+        if(acid == null || acid == 1){
+            return new BaseResponse("不允许此公众号同步");
+        }
+        AccountWechatDTO accountWechatDTO = accountWechatDao.getModelById(acid);
+        if (accountWechatDTO == null) {
+            return new BaseResponse("参数异常，1001");
+        }
+
+        BaseResponse response = setWeChatTemplateMessage(accountWechatDTO);
+        if(response.getCode() == BaseResponse.ok()) {
+            response = setWeChatTemplateMessageConfig(accountWechatDTO);
+        }
+        return response;
+    }
+
+    /**
      * 保存公众号模版消息
      * @param acid
      * @return
      * @throws Exception
      */
     public BaseResponse setWeChatTemplateMessage(Integer acid) throws Exception{
+        AccountWechatDTO accountWechatDTO = accountWechatDao.getModelById(acid);
+        if (accountWechatDTO == null) {
+            return new BaseResponse("参数异常，1001");
+        }
+        return setWeChatTemplateMessage(accountWechatDTO);
+    }
+
+    /**
+     * 保存公众号模版消息
+     * @param accountWechatDTO
+     * @return
+     * @throws Exception
+     */
+    public BaseResponse setWeChatTemplateMessage(AccountWechatDTO accountWechatDTO) throws Exception {
         List<String> templateShortList = Arrays.asList(
                 "OPENTM412822604","OPENTM411154202","OPENTM413796815",
                 "OPENTM400239988","OPENTM201594720","TM00850",
@@ -139,13 +178,9 @@ public class AccountWechatBll {
                 "OPENTM406590003","OPENTM412499953","OPENTM411733174",
                 "OPENTM401905934","OPENTM407077809","OPENTM412075804",
                 "OPENTM411207151","OPENTM401003199"
-                );
-        AccountWechatDTO accountWechatDTO = accountWechatDao.getModelById(acid);
-        if (accountWechatDTO == null) {
-            return new BaseResponse("参数异常，1001");
-        }
+        );
 
-        String accessToken = refreshTokenBll.getAuthorizerAccessToken(acid, AppTypeEnum.WECHATSERVICE);
+        String accessToken = refreshTokenBll.getAuthorizerAccessToken(accountWechatDTO.getAcid(), AppTypeEnum.WECHATSERVICE);
         //查看下公众号消息的行业设置是否为"互联网|电子商务"，不是的话，设置为"互联网|电子商务"
         if(!getWeChatIndustry(accessToken)){
             setWeChatIndustry(accessToken);
@@ -191,12 +226,25 @@ public class AccountWechatBll {
         return new BaseResponse();
     }
 
+    /**
+     * 设置公众号默认模版消息
+     * @param acid
+     * @return
+     */
     public BaseResponse setWeChatTemplateMessageConfig(Integer acid) {
         AccountWechatDTO accountWechatDTO = accountWechatDao.getModelById(acid);
         if (accountWechatDTO == null) {
             return new BaseResponse("参数异常，1001");
         }
+        return setWeChatTemplateMessageConfig(accountWechatDTO);
+    }
 
+    /**
+     * 设置公众号默认模版消息
+     * @param accountWechatDTO
+     * @return
+     */
+    public BaseResponse setWeChatTemplateMessageConfig(AccountWechatDTO accountWechatDTO) {
         List<MemberMessageTemplateDTO> templateDTOList = memberMessageTemplateDao.selectByTemplateName(accountWechatDTO.getUniacid(), null);
 
         if(templateDTOList == null || templateDTOList.size() == 0){
@@ -219,7 +267,6 @@ public class AccountWechatBll {
                 "virtualsend","orderstatus","refund1","refund3","refund4","refund2",
                 "recharge_ok","withdraw_ok","backrecharge_ok","backpoint_ok","upgrade",
                 "o2o_sverify","o2o_bverify");
-        List<String> typeList = Arrays.asList("template","close_advanced","sms","close_sms");
 
         for (String template : templateList) {
             String key = template + "_template";
@@ -232,6 +279,9 @@ public class AccountWechatBll {
         app.set("notice", appAssocArray);
         appSets = PHPTransformUtil.getPHPContent(app);
         shopSyssetDao.updateSets(accountWechatDTO.getUniacid(), appSets);
+        //更新缓存
+        cacheBll.set(RedisUtils.getDBCacheKey(accountWechatDTO.getUniacid(), "sysset"), appSets);
+
         return new BaseResponse();
     }
 
@@ -370,7 +420,7 @@ public class AccountWechatBll {
 
         switch (request.getBindType()) {
             case "create":
-                    result = createWeChatOpen(authorizerAppID, accessToken);
+                result = createWeChatOpen(authorizerAppID, accessToken);
                 break;
             case "bind":
                 result = bindWeChatOpen(authorizerAppID, uniAccountDTO.getWeChatOpen(), accessToken);
