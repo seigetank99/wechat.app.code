@@ -642,7 +642,7 @@ public class AccountWechatBll {
         JSONObject jsonObject = JSONObject.parseObject(response);
         BaseResponse result = BaseResponse.getInstance(jsonObject);
         if(result.getCode() != BaseResponse.ok()){
-            throw new PredictException(String.format("添加公众号模版消息失败！%s %s", result.getCode(), result.getMessage()));
+            throw new PredictException(String.format("删除公众号模版消息失败！%s %s", result.getCode(), result.getMessage()));
         }
     }
 }

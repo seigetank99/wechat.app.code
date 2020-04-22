@@ -76,8 +76,16 @@ public class HttpUtil {
      * @throws Exception
      */
     public static String doPost(String url, String parameter) throws Exception {
+        return doPost(url, parameter,"application/x-www-form-urlencoded;charset=UTF-8");
+    }
 
-        System.out.println("POST parameter : " + parameter);
+    /**
+     * Do POST request
+     * @param url
+     * @return
+     * @throws Exception
+     */
+    public static String doPost(String url, String parameter, String contentType) throws Exception {
         URL localURL = new URL(url);
         URLConnection connection = openConnection(localURL);
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
@@ -86,7 +94,7 @@ public class HttpUtil {
         httpURLConnection.setRequestMethod("POST");// 设定请求的方法为"POST"，默认是GET
         httpURLConnection.setRequestProperty("Accept-Charset", charset);
         httpURLConnection.setRequestProperty("contentType", charset);
-        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+        httpURLConnection.setRequestProperty("Content-Type", contentType);
         httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameter.length()));
         OutputStream outputStream = null;
         OutputStreamWriter outputStreamWriter = null;

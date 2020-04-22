@@ -7,6 +7,8 @@ import cn.loftown.wechat.app.code.biz.RefreshTokenBll;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
 import cn.loftown.wechat.app.code.model.BaseRequest;
 import cn.loftown.wechat.app.code.model.BindOpenToWeChatRequest;
+import cn.loftown.wechat.app.code.model.PubTemplateRequest;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,6 +65,18 @@ public class WebApiController {
             return accountWechatBll.setWeChatTemplateMsg(request.getWxAppAcid());
         } catch (Exception ex) {
             return new BaseResponse(ex.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/pubTemplate")
+    public JSONObject pubTemplate(PubTemplateRequest request) {
+        JSONObject response = new JSONObject();
+        response.put("errcode", 1);
+        try {
+            return accountWxappBll.pubTemplate(request);
+        } catch (Exception ex) {
+            response.put("errmsg", ex.getMessage());
+            return response;
         }
     }
 }

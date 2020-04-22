@@ -12,7 +12,9 @@ import cn.loftown.wechat.app.code.entity.*;
 import cn.loftown.wechat.app.code.enums.AppTypeEnum;
 import cn.loftown.wechat.app.code.enums.StatusEnum;
 import cn.loftown.wechat.app.code.enums.WxAppCodeStatusEnum;
+import cn.loftown.wechat.app.code.exception.PredictException;
 import cn.loftown.wechat.app.code.model.CommitCodeRequest;
+import cn.loftown.wechat.app.code.model.PubTemplateRequest;
 import cn.loftown.wechat.app.code.model.SubmitCodeRequest;
 import cn.loftown.wechat.app.code.util.HttpUtil;
 import cn.loftown.wechat.app.code.util.PHPTransformUtil;
@@ -28,6 +30,7 @@ import org.springframework.util.StringUtils;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -826,6 +829,199 @@ public class AccountWxappBll {
         }
         BaseResponse result = BaseResponse.getInstance(jsonObject);
         return result;
+    }
+
+    /**
+     * 查询小程序的服务类目
+     * @param accessToken
+     * @return
+     * data 的结构
+     * 属性	类型	    说明
+     * id	number	类目id，查询公共库模版时需要
+     * name	string	类目的中文名
+     * @throws Exception
+     */
+    private JSONObject getCategory(String accessToken) throws Exception {
+        String response = HttpUtil.doGet("https://api.weixin.qq.com/wxaapi/newtmpl/getcategory?access_token=" + accessToken);
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        return jsonObject;
+    }
+
+    /**
+     * 查询小程序的订阅消息
+     * @param accessToken
+     * @return
+     * data 的结构
+     * 属性	        类型	        说明
+     * priTmplId	string	    添加至帐号下的模板 id，发送小程序订阅消息时所需
+     * title	    string	    模版标题
+     * content	    string	    模版内容
+     * example	    string	    模板内容示例
+     * type	        number	    模版类型，2 为一次性订阅，3 为长期订阅
+     * @throws Exception
+     */
+    public JSONObject getTemplate(String accessToken) throws Exception{
+        String response = HttpUtil.doGet("https://api.weixin.qq.com/wxaapi/newtmpl/gettemplate?access_token=" + accessToken);
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        return jsonObject;
+    }
+
+    /**
+     * 获取模板标题下的关键词列表
+     * @param accessToken
+     * @param tid 模板标题 id
+     * @return
+     * data 的结构
+     * 属性	    类型	    说明
+     * kid	    number	关键词 id，选用模板时需要
+     * name	    string	关键词内容
+     * example	string	关键词内容对应的示例
+     * rule	    string	参数类型
+     * @throws Exception
+     */
+    public JSONObject getPubTemplateKeyWords(String accessToken, String tid) throws Exception{
+        String response = HttpUtil.doGet("https://api.weixin.qq.com/wxaapi/newtmpl/getpubtemplatekeywords?access_token=" + accessToken + "&tid=" + tid);
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        return jsonObject;
+    }
+
+    /**
+     * 查询类目下的公共模版
+     * @param accessToken
+     * @param ids 类目 id，多个用逗号隔开
+     * @param start 用于分页，表示从 start 开始。从 0 开始计数
+     * @param limit 用于分页，表示拉取 limit 条记录。最大为 30
+     * @return
+     * data 的结构
+     * 属性	        类型	    说明
+     * tid	        number	模版标题 id
+     * title	    string	模版标题
+     * type	        number	模版类型，2 为一次性订阅，3 为长期订阅
+     * categoryId	number	模版所属类目 id
+     * @throws Exception
+     */
+    public JSONObject getPubTemplatetitles(String accessToken, String ids, int start, int limit) throws Exception{
+        String response = HttpUtil.doGet(String.format("https://api.weixin.qq.com/wxaapi/newtmpl/getpubtemplatetitles?access_token=%s&ids=%s&start=%s&limit=%s", accessToken, ids, start, limit));
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        return jsonObject;
+    }
+
+    /**
+     * 添加小程序订阅消息
+     * @param accessToken
+     * @param tid 模板标题 id，可通过接口获取，也可登录小程序后台查看获取
+     * @param kidList 开发者自行组合好的模板关键词列表，关键词顺序可以自由搭配（例如 [3,5,4] 或 [4,5,3]），最多支持5个，最少2个关键词组合
+     * @param sceneDesc 服务场景描述，15个字以内
+     * @return 添加至帐号下的模板id，发送小程序订阅消息时所需  jsonObject.getString("priTmplId")
+     * @throws Exception
+     */
+    public JSONObject addTemplate(String accessToken, String tid, List<Integer> kidList, String sceneDesc) throws Exception{
+        JSONObject request = new JSONObject();
+        request.put("tid", tid);
+        request.put("kidList", kidList);
+        request.put("sceneDesc", sceneDesc);
+        String json = request.toJSONString();
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxaapi/newtmpl/addtemplate?access_token=" + accessToken, json, "application/json");
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        BaseResponse result = BaseResponse.getInstance(jsonObject);
+        if(result.getCode() != BaseResponse.ok()){
+            throw new PredictException(String.format("%s %s", result.getCode(), result.getMessage()));
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 删除小程序订阅消息
+     * @param accessToken
+     * @param priTmplId 要删除的模板id
+     * @throws Exception
+     */
+    public JSONObject delTemplate(String accessToken, String priTmplId) throws Exception{
+        JSONObject request = new JSONObject();
+        request.put("priTmplId", priTmplId);
+        String response = HttpUtil.doPost("https://api.weixin.qq.com/wxaapi/newtmpl/deltemplate?access_token=" + accessToken, request.toJSONString());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        BaseResponse result = BaseResponse.getInstance(jsonObject);
+        if(result.getCode() != BaseResponse.ok()){
+            throw new PredictException(String.format("删除小程序订阅消息失败！%s %s", result.getCode(), result.getMessage()));
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 获取小程序类目下的公共订阅消息模版
+     * @param acessToken
+     * @param start
+     * @param limit
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getPubTemplatetitles(String acessToken, int start, int limit) throws Exception{
+        JSONObject response = new JSONObject();
+        response.put("errcode", 1);
+        response.put("errmsg", "操作失败，请刷新后重试");
+
+        JSONArray categoryList = getCategory(acessToken).getJSONArray("data");
+        if(categoryList == null || categoryList.size() == 0){
+            response.put("errmsg","小程序未设置服务类目，请先设置服务类目");
+        }
+        StringBuffer sb = new StringBuffer();
+        HashMap<Integer, String> idMap = new HashMap<>();
+        for (int i = 0; i < categoryList.size(); i++){
+            JSONObject data = categoryList.getJSONObject(i);
+            idMap.put(data.getInteger("id"), data.getString("name"));
+            if(i == 0) {
+                sb.append(data.get("id"));
+            } else {
+                sb.append("," + categoryList.getJSONObject(i).get("id"));
+            }
+        }
+
+        response = getPubTemplatetitles(acessToken, sb.toString(), start, limit);
+        JSONArray dataList = response.getJSONArray("data");
+        if(dataList == null || dataList.size() == 0){
+            return response;
+        }
+        JSONArray resultList = new JSONArray();
+        for (int i = 0; i < dataList.size(); i++){
+            JSONObject data = dataList.getJSONObject(i);
+            data.put("categoryName", idMap.get(data.getInteger("categoryId")));
+            data.put("typeName", data.getInteger("type") == 2 ? "一次性订阅" : "长期订阅");
+            resultList.add(data);
+        }
+        response.put("data", resultList);
+        return response;
+    }
+
+    public JSONObject pubTemplate(PubTemplateRequest request) throws Exception{
+        JSONObject response = new JSONObject();
+        response.put("errcode", 1);
+        response.put("errmsg", "操作失败，请刷新后重试");
+        if(StringUtils.isEmpty(request.getOperateType())){
+            return response;
+        }
+        AccountWxappDTO accountWxappDTO = accountWxappDao.getModelByUniAcid(request.getUniacid());
+        if(accountWxappDTO == null){
+            return response;
+        }
+        String acessToken = refreshTokenBll.getAuthorizerAccessToken(accountWxappDTO.getAcid(), AppTypeEnum.WECHATMINIAPP);
+
+        switch (request.getOperateType()) {
+            case "getPubTemplateTitles":
+                return getPubTemplatetitles(acessToken, request.getStart(), request.getLimit());
+            case "getPubTemplateKeyWords":
+                return getPubTemplateKeyWords(acessToken, request.getTid());
+            case "getTemplate":
+                return getTemplate(acessToken);
+            case "getCategory":
+                return getCategory(acessToken);
+            case "addTemplate":
+                return addTemplate(acessToken, request.getTid(), request.getKidList(), request.getSceneDesc());
+            case "delTemplate":
+                return delTemplate(acessToken, request.getPriTmplId());
+            default:
+                return response;
+        }
     }
 
     /**
